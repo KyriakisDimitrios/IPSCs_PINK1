@@ -7,6 +7,7 @@ Parkinson’s disease (PD) is the second most prevalent neurodegenerative disord
 
 <!-- ![Figure1](Figures/Figure1.jpg) -->
 <img src="Figures/Figure1.jpg" width=50%>
+
 **Figure 1:** Experimental design.
 
 ![Figure2](Figures/Figure2.jpg)
