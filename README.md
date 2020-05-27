@@ -94,10 +94,12 @@ EBs are cells at an early stage of spontaneous differentiation. Scorecard analys
      ```
 </details>
 
+
 ## Preprocessing
 
 The identification of the low quality cells was done separately in each data set. In order to select only the highest quality data, we sorted the cells by the cumulative gene expression. A subset of cells with the highest cumulative expression was considered for the analysis [1]. 
 Additional to this filtering, we defined cells as low-quality, based on three criteria for each cell. The number of the genes that expressed is more than 200 and 2 median-absolute- deviations (MADs) above the median, the total number of counts is 2 MADs above or below the median and the percentage of counts to mitochondrial genes is 1.5 median-absolute- deviations (MADs) above the median. Cells failing at least one criteria were considered as low quality cells and filtered out from further analysis. Similar to the cell filtering, we filtered out the low quality genes that been expressed in less than 10 cells in the data. 
+
 
 <details>
   <summary>Code</summary>  
@@ -120,6 +122,7 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
     ```
 </details>
 
+
 ![SupFig1](Figures/SupFig1.jpg)
 **Supl.Figure1:** Quality control Plots of control sample Day 06. a) Cumulative Total number of counts. The red vertical lines represent the down and upper bound of the expected elbow. The blue dot represent the transitional point calculated using ecp r package. b)  Histograms of the three criteria that used for low quality cell filtering. c,d) Violin plots of the three criteria. c) Cell score before filtering. Red dots are the cells that filtered after the quality control. d) The overview of the three criteria after filtering step.  
 
@@ -128,6 +131,8 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
 ## Data Intergration
 
 The integration of the filtered matrices of the different datasets was performed using scTransform [2] on a Seurat object [3] based on the treatment. The final gene expression matrix which used for the downstream analysis, consist of 4495 cells and 39194 genes. Principal component analysis (PCA) was computed using the 5000 most variable genes on the integrated data. 
+
+
 <details>
   <summary>Code</summary> 
     ```{r remapping}
@@ -160,11 +165,11 @@ The integration of the filtered matrices of the different datasets was performed
 
 
 
-
-
 ## Clustering
 
 The clustering of data was performed using Louvain clustering. The resolution of the clustering was selected based on the best silhouette score of the different resolutions [4].
+
+
 <details>
   <summary>Code</summary> 
     ```{r Clustering}
