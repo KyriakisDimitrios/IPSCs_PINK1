@@ -9,7 +9,7 @@ Parkinson’s disease (PD) is the second most prevalent neurodegenerative disord
 **Figure 1:** Experimental design.
 
 ![Figure2](Figures/Figure2.jpg)
-**Figure 2:**Generation and classification of iPS cell lines.
+**Figure 2:** Generation and classification of iPS cell lines.
 a). Immunocytochemistry. Staining for the iPSC markers Oct3/4 and TRA-180. DAPI was used to stain cell nuclei as a reference. 
 b). Results of Scorecard analysis of iPSCs and embryonic bodies (EBs). 
 iPSCs are expected to show high expression of self-renewal genes (Self-renew +) and low mesoderm, ectoderm and endoderm marker expression (Ecto -, Meso -, Endo -).
