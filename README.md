@@ -1,3 +1,7 @@
+markdown: kramdown
+kramdown:
+  parse_block_html: true
+  
 # PINK1 shows LRRK2, Parkin, and SNCA as part of the Parkinson’s network.
 
 
@@ -110,7 +114,6 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
 <details><summary>Code</summary> 
 <p>
 ```r 
-
 # ======== Perform an integrated analysis ====
 NewDir <- paste0(Sys.Date(),"_",tool,"_elbow_",elbow,"_Mito-",remove_mt,"_Ribo-",remove_ribsomal,"_SCT-",SCT,"_criteria_pass-",criteria_pass)
 dir.create(NewDir)
