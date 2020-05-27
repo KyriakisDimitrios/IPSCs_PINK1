@@ -57,6 +57,7 @@ library(NMF)
 library(ggplot2)
 library(ggpubr)
 library(cowplot)
+library(RColorBrewer)
 set.seed(123)
 ```
 </p>
@@ -230,57 +231,8 @@ pink.list <- NULL
 </details>
 
 
-
-## iPSCs Differentiation
-
-A short list of manually curated markers was used in order to validate the different stages of the differentiation process. 
-
-<details><summary>Code</summary> 
-<p>
-
-```r
-# ================================== Developmental Stages =========================================
-dir.create("Developmental_Markers")
-setwd("Developmental_Markers")
-DefaultAssay(Combined) <- "RNA"
-file <- paste0(WORKDIR,"/Gene_Lists/Paper_IPCS_genes.txt")
-genes_state <-read.table(file)
-pdf("Cell_Assignment_Plots.pdf")
-res <- cell_type_assignment(object=Combined,tab_name = "Identity",group_by="Cluster",file,assign=TRUE,color_list = color_clust)
-Combined$Identity <- as.vector(Combined$Cluster)
-for (level in levels(Combined$Cluster)){
-    Combined$Identity[as.vector(Combined$Cluster) == as.numeric(level)] <- res$radar$Identity[as.numeric(level)]
-}
-Combined$Identity <- as.factor(Combined$Identity)
-DimPlot(Combined,group.by = c("Identity","Cluster"))
-dev.off()
-for(category in levels(as.factor(genes_state$V1))){
-    category_genes <- toupper(as.vector(genes_state[genes_state$V1==category,2]))
-    category_genes_l <- category_genes[category_genes%in%rownames(Combined)]
-    Combined <- AddModuleScore(Combined,features = list(category_genes_l),name = category)
-    pdf(paste0(category,"_umap_projection_condition_regPhase.pdf"),width = 8,height = 8)
-    res <- ICSWrapper::scatter_gene(Combined,features = category_genes_l,ncol = 2,nrow = 2,size=1.1)
-    plot(res)
-    dev.off()
-}
-features <- c("iPSC_identity1","Mda_identity_stage11", "Mda_identity_stage21","Mda_identity_stage31","Mda_identity_stage41", "Non.Mda1")    
-pdf("Development_umap_projection_condition_regPhase.pdf",width = 12,height = 8)
-res <- ICSWrapper::scatter_gene(Combined,features = features,ncol = 3,nrow = 2,size=1.1)
-print(ggarrange(plotlist=res,ncol = 3,nrow = 2))
-dev.off()
-Combined <- ScaleData(Combined,rownames(Combined))
-category_genes <- toupper(as.vector(genes_state[,2]))
-category_genes_l <- category_genes[category_genes%in%rownames(Combined)]
-ICSWrapper::annotated_heat(Combined,row_annotation = c(1),gene_list = category_genes_l,ordering = "condition",title="Development_Markers",color_list = color_list)
-ics_scanpy(Combined,features = category_genes_l,group.by = "condition",Rowv = NA,scale="c1")
-setwd("../")
-# --------------------------------------------------------------------------------------------------
-```
-</p>
-</details>
   
 ## Pairwise Differential Expression
-
 
 <details><summary>Code</summary> 
 <p>
@@ -358,7 +310,14 @@ mclapply(c(1:dim(cl_combinations)[2]),FUN=pairwise_df,object=Combined,cl_combina
 <p>
 
 ```r
-dirs_pairs <- list.dirs("C:/Users/dimitrios.kyriakis/Desktop/PhD/Projects/Michi_Data/DF_Pairwise_Networks/DF_Pairwise_PAPER",full.names = TRUE )[-1]
+library("viridis")
+library("ggpubr")
+library("gridExtra")
+library("VennDiagram")
+library("RColorBrewer")
+myCol <- brewer.pal(3, "Pastel2")
+
+dirs_pairs <- list.dirs("C:/Users/dimitrios.kyriakis/Desktop/PhD/Projects/Michi_Data/Paper_fig_test/2020-05-27_seurat_elbow_TRUE_Mito-FALSE_Ribo-FALSE_SCT-TRUE_criteria_pass-3/DF_Pairwise_PAPER",full.names = TRUE )[-1]
 dirs_pairs <- grep('IPSC|D06.*D06|D15.*D15|D21.*D21',dirs_pairs,value = TRUE)
 dirs_pairs <- dirs_pairs[-4]
 df_return_nt_cntrl <- list()
