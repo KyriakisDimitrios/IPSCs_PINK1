@@ -85,7 +85,7 @@ Figure 5: a) Heatmap of the common differential expressed genes (adjusted p-valu
     criteria_pass=3
     min.cells <- 10
     min.features <- 200
-    ```
+     ```
 </details>
 
 ## Preprocessing
