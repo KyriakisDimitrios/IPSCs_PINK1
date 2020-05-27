@@ -120,6 +120,9 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
     ```
 </details>
 
+![SupFig1](Figures/SupFig1.jpg)
+**Supl.Figure1:** Quality control Plots of control sample Day 06. a) Cumulative Total number of counts. The red vertical lines represent the down and upper bound of the expected elbow. The blue dot represent the transitional point calculated using ecp r package. b)  Histograms of the three criteria that used for low quality cell filtering. c,d) Violin plots of the three criteria. c) Cell score before filtering. Red dots are the cells that filtered after the quality control. d) The overview of the three criteria after filtering step.  
+
 
 
 ## Data Intergration
