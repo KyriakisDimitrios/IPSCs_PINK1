@@ -399,6 +399,46 @@ setwd("../")
 
 
 
+## Correlation Network
+
+<details><summary>Code</summary> 
+<p>
+
+```r
+
+Control<-subset(Combined,subset = Treatment=="Control")
+PINK1<-subset(Combined,Treatment=="PINK") 
+
+dataset <- as.data.frame(Combined@assays$SCT@data)
+
+graph_annotation <- read.csv("NODES run 13.csv")
+first_graph <- read.csv("g3.csv")
+f_g_genes <- unique(c(as.vector(first_graph$Source),as.vector(first_graph$Target))) 
+f_g_genes <- toupper(f_g_genes)
+f_g_genes <- gsub("-", ".", f_g_genes, fixed = TRUE)
+# f_g_genes<-c(f_g_genes,"PRKN","ADGRG7")
+r_f_g_genes <- f_g_genes[f_g_genes%in% rownames(dataset)]
+cat(paste("Genes not in dataset:",
+length(f_g_genes)-length(r_f_g_genes)))
+setdiff(f_g_genes, r_f_g_genes)
+r_first_graph <- first_graph[first_graph$Source %in% r_f_g_genes,]
+r2_first_graph <- r_first_graph[r_first_graph$Target %in% r_f_g_genes,]
+dim(first_graph)
+dim(r2_first_graph)
+dataset_r <-dataset[r_f_g_genes,]
+retur_graph <- ics_net(dataset = dataset_r , method = "correlation",threshold = 0.3)
+
+g3 <- graph_from_data_frame(r2_first_graph,directed = FALSE)
+common <- retur_graph$graph %s% g3
+common_S <-  graph_from_data_frame(as_edgelist(igraph::simplify(common), names = TRUE),directed = FALSE)
+
+pdf("f3_Common_net.pdf")
+set.seed(123)
+plot(common_S)
+dev.off()
+```
+</p>
+</details>
 
 ## Session Info
 
