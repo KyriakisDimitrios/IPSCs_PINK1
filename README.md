@@ -1,7 +1,3 @@
-markdown: kramdown
-kramdown:
-  parse_block_html: true
-  
 # PINK1 shows LRRK2, Parkin, and SNCA as part of the Parkinson’s network.
 
 
@@ -40,8 +36,7 @@ EBs are cells at an early stage of spontaneous differentiation. Scorecard analys
 ## Libraries 
 <details><summary>Code</summary> 
 <p>
-```r
-
+```{r libraries}
 library(reticulate)
 use_python("C:/Users/dimitrios.kyriakis/AppData/Local/Continuum/anaconda3/envs/iscwrapper/python.exe", required = TRUE)
 options(future.globals.maxSize= 2122317824)
@@ -60,7 +55,6 @@ library(ggplot2)
 library(ggpubr)
 library(cowplot)
 set.seed(123)
-
 ```
 </p>
 </details>
@@ -69,8 +63,7 @@ set.seed(123)
 ## Setting Up
 <details><summary>Code</summary> 
 <p>
-```r
-
+```{r setup}
 # ================================ SETTING UP ======================================== #
 tool="seurat"
 project ="Michi_Data"
@@ -99,7 +92,6 @@ SCT=TRUE
 criteria_pass=3
 min.cells <- 10
 min.features <- 200
-
 ```
 </p>
 </details>
@@ -113,7 +105,7 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
 
 <details><summary>Code</summary> 
 <p>
-```r 
+```{r readfiles}
 # ======== Perform an integrated analysis ====
 NewDir <- paste0(Sys.Date(),"_",tool,"_elbow_",elbow,"_Mito-",remove_mt,"_Ribo-",remove_ribsomal,"_SCT-",SCT,"_criteria_pass-",criteria_pass)
 dir.create(NewDir)
@@ -129,7 +121,6 @@ Return_fun <- ICSWrapper::create_cds2(list_of_files=list_of_files,
 Combined  <- Return_fun$Combined
 Data_List <- Return_fun$Data_List
 setwd("../")
-
 ```
 </p>
 </details>
@@ -148,7 +139,6 @@ The integration of the filtered matrices of the different datasets was performed
 <details><summary>Code</summary> 
 <p>
 ```{r remapping}
-
 dir.create("Aligned_Cond_RegPhase")
 setwd("Aligned_Cond_RegPhase")
 # ================================== ALLIGN CONDITIONS =========================================
@@ -173,7 +163,6 @@ Seurat.combined <- IntegrateData(anchorset = int.anchors, normalization.method =
 DefaultAssay(object = Seurat.combined) <- "integrated"
 Combined <- Seurat.combined
 setwd("../")
-
 ```
 </p>
 </details>
