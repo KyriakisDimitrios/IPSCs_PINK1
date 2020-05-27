@@ -7,11 +7,9 @@ Parkinson’s disease (PD) is the second most prevalent neurodegenerative disord
 
 
 
-
 # Libraries 
 <details>
   <summary>Code</summary>
-
     ```{r libraries, include=FALSE}
     library(reticulate)
     use_python("C:/Users/dimitrios.kyriakis/AppData/Local/Continuum/anaconda3/envs/iscwrapper/python.exe", required = TRUE)
@@ -57,8 +55,7 @@ Parkinson’s disease (PD) is the second most prevalent neurodegenerative disord
     color_clust <- c(brewer.pal(12,"Paired")[-11],"black","gray","magenta4","seagreen4",brewer.pal(9,"Set1")[-6],brewer.pal(8,"Dark2"))
     color_cells <- c(brewer.pal(9,"Set1")[-6],"goldenrod4","darkblue","seagreen4")
     color_list <- list(condition=color_cond,Cluster=color_clust,Cell_Type=color_cells,State=color_clust)
-
-    # Number of cells to use
+    # ========= Parameters
     imputation = FALSE
     remove_mt=FALSE
     remove_ribsomal=FALSE
@@ -85,14 +82,12 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
     setwd(NewDir)
     dir.create("QC")
     setwd("QC")
-
     Return_fun <- ICSWrapper::create_cds2(list_of_files=list_of_files,
                                         condition_names=condition_names,
                                         min.features =min.features,min.cells=min.cells,
                                         remove_mt=remove_mt,data_10x=data_10x,
                                         elbow = elbow,tool=tool,n_cores=1,SCT=SCT,
                                         criteria_pass = criteria_pass,vars.to.regress=c("nCount_RNA"))
-
     Combined  <- Return_fun$Combined
     Data_List <- Return_fun$Data_List
     setwd("../")
@@ -111,15 +106,12 @@ The integration of the filtered matrices of the different datasets was performed
     setwd("Aligned_Cond_RegPhase")
     # ================================== ALLIGN CONDITIONS =========================================
     DefaultAssay(Combined) <- "RNA"
-
     Combined$condition <- factor(as.factor(Combined$condition), levels = c("Control_IPSCs", "Control_D06"  ,"Control_D10",   "Control_D15",   "Control_D21",
     "PINK1_IPSCs","PINK1_D06",     "PINK1_D15",     "PINK1_D21"))
-
     Combined$Treatment <-as.vector(Combined$condition)
     Combined$Treatment[grep("Control",Combined$Treatment)] <- "Control"
     Combined$Treatment[grep("PINK",Combined$Treatment)] <- "PINK"
     pink.list <-SplitObject(Combined,split.by = "Treatment")
-
     for (i in 1:length(pink.list)) {
         pink.list[[i]] <- SCTransform(pink.list[[i]], verbose = FALSE,vars.to.regress=c("G2M.Score","S.Score"))
     }
@@ -132,10 +124,7 @@ The integration of the filtered matrices of the different datasets was performed
     Seurat.combined <- IntegrateData(anchorset = int.anchors, normalization.method = "SCT",
                                         verbose = FALSE)
     DefaultAssay(object = Seurat.combined) <- "integrated"
-    #Seurat.combined$condition <- Idents(object = Seurat.combined)
-
     Combined <- Seurat.combined
-
     setwd("../")
     ```
 </details>
@@ -153,25 +142,18 @@ The clustering of data was performed using Louvain clustering. The resolution of
     # ================================== Clustering =========================================
     dir.create("Clusters")
     setwd("Clusters")
-
-
-    # Combined <- ReduceDim(Combined,method="umap",project=project)$Combined
-    # debugonce(reduce_dim)
     Combined <- ICSWrapper::reduce_dim(Combined,project=project,assay = "SCT")$Combined#,resolution=c(0.1))$Combined
-
+    # ====== Reorder Conditions
     Combined$condition <- factor(as.factor(Combined$condition), levels = c("Control_IPSCs", "Control_D06"  ,"Control_D10",   "Control_D15",   "Control_D21",
     "PINK1_IPSCs","PINK1_D06",     "PINK1_D15",     "PINK1_D21"))
-
-
+    # ====== PLot
     pdf(paste(Sys.Date(),project,"tsne","projection.pdf",sep="_"))
     ICSWrapper::plot_cells(Combined,target="condition",leg_pos="right",save=FALSE,ncol=1,color_list = color_list)
     ICSWrapper::plot_cells(Combined,target="Cluster",leg_pos="right",save=FALSE,ncol=1,color_list = color_list)
     dev.off()
-
+    # Quality Plots
     ICSWrapper::plot_nFeatures(Combined,title="",save=TRUE,tiff=FALSE,reduce="t-SNE",p3D=FALSE)
     ICSWrapper::plot_tot_mRNA(Combined,title="",save=TRUE,tiff=FALSE,reduce="t-SNE",p3D=FALSE)
-
-
     if(tolower(tool)=="seurat" & elbow){
         p3 <- DimPlot(object = Combined, reduction = "umap", group.by = "condition",cols = color_cond)
         p4 <- DimPlot(object = Combined, reduction = "umap", label = TRUE,cols = color_clust)
@@ -182,7 +164,7 @@ The clustering of data was performed using Louvain clustering. The resolution of
     }
     setwd("../")
     saveRDS(Combined,paste0("Clustered_",NewDir,".rds"))
-
+    # Sum up Plots
     pdf(paste(Sys.Date(),project,"_projection_Aligned_Treatment.pdf",sep="_"))
     ICSWrapper::plot_cells(Combined,target="condition",leg_pos="right",save=FALSE,ncol=1,reduction="umap",color_list = color_list)
     ICSWrapper::plot_cells(Combined,target="Cluster",leg_pos="right",save=FALSE,ncol=1,reduction="umap",color_list = color_list)
@@ -192,14 +174,11 @@ The clustering of data was performed using Louvain clustering. The resolution of
     ICSWrapper::plot_cells(Combined,target="Phase",leg_pos="right",save=FALSE,ncol=1,reduction="tsne",color_list = color_list)
     dev.off()
     # ---------------------------------------------------------------------------------------
-
     res<-ICSWrapper::scatter_gene(Combined,features = c("nCount_RNA","nFeature_RNA","percent.mito","percent.rb"),size=0.9)
-
     pdf("Combined_QC.pdf")
     print(res)
+    # Free Space
     dev.off()
-
-
     Return_fun <- NULL
     Seurat.combined <- NULL
     pink.list <- NULL
@@ -221,16 +200,9 @@ A short list of manually curated markers was used in order to validate the diffe
     setwd("Developmental_Markers")
     DefaultAssay(Combined) <- "RNA"
     file <- paste0(WORKDIR,"/Gene_Lists/Paper_IPCS_genes.txt")
-
     genes_state <-read.table(file)
-
-
-    # debugonce(cell_type_assignment)
-
     pdf("Cell_Assignment_Plots.pdf")
     res <- cell_type_assignment(object=Combined,tab_name = "Identity",group_by="Cluster",file,assign=TRUE,color_list = color_clust)
-
-
     Combined$Identity <- as.vector(Combined$Cluster)
     for (level in levels(Combined$Cluster)){
         Combined$Identity[as.vector(Combined$Cluster) == as.numeric(level)] <- res$radar$Identity[as.numeric(level)]
@@ -238,28 +210,20 @@ A short list of manually curated markers was used in order to validate the diffe
     Combined$Identity <- as.factor(Combined$Identity)
     DimPlot(Combined,group.by = c("Identity","Cluster"))
     dev.off()
-
-
-
     for(category in levels(as.factor(genes_state$V1))){
-    category_genes <- toupper(as.vector(genes_state[genes_state$V1==category,2]))
-    category_genes_l <- category_genes[category_genes%in%rownames(Combined)]
-    Combined <- AddModuleScore(Combined,features = list(category_genes_l),name = category)
-
-    pdf(paste0(category,"_umap_projection_condition_regPhase.pdf"),width = 8,height = 8)
-    res <- ICSWrapper::scatter_gene(Combined,features = category_genes_l,ncol = 2,nrow = 2,size=1.1)
-    plot(res)
-    dev.off()
-    
+        category_genes <- toupper(as.vector(genes_state[genes_state$V1==category,2]))
+        category_genes_l <- category_genes[category_genes%in%rownames(Combined)]
+        Combined <- AddModuleScore(Combined,features = list(category_genes_l),name = category)
+        pdf(paste0(category,"_umap_projection_condition_regPhase.pdf"),width = 8,height = 8)
+        res <- ICSWrapper::scatter_gene(Combined,features = category_genes_l,ncol = 2,nrow = 2,size=1.1)
+        plot(res)
+        dev.off()
     }
-
     features <- c("iPSC_identity1","Mda_identity_stage11", "Mda_identity_stage21","Mda_identity_stage31","Mda_identity_stage41", "Non.Mda1")    
-
     pdf("Development_umap_projection_condition_regPhase.pdf",width = 12,height = 8)
     res <- ICSWrapper::scatter_gene(Combined,features = features,ncol = 3,nrow = 2,size=1.1)
     print(ggarrange(plotlist=res,ncol = 3,nrow = 2))
     dev.off()
-
     Combined <- ScaleData(Combined,rownames(Combined))
     category_genes <- toupper(as.vector(genes_state[,2]))
     category_genes_l <- category_genes[category_genes%in%rownames(Combined)]
@@ -287,12 +251,9 @@ A short list of manually curated markers was used in order to validate the diffe
     DefaultAssay(Combined) <- "RNA"
     Combined <- NormalizeData(Combined)
     Combined <- ScaleData(Combined,rownames(Combined@assays$RNA@counts))
-
     library(parallel)
     pairwise_df <- function (comb,object,cl_combinations){
         DefaultAssay(object) <- "RNA"
-
-        # for(comb in 1:dim(cl_combinations)[2]){
         title <- paste(cl_combinations[,comb],collapse = "_")
         dir.create(title)
         setwd(title)
@@ -300,9 +261,7 @@ A short list of manually curated markers was used in order to validate the diffe
         idents <- as.vector(cl_combinations[,comb])
         ident.1 <- idents[1]
         print(ident.1)
-
         ident.2 <- idents[2]
-
         pbmc.markers <- FindMarkers(object = object,
                                         ident.1 = ident.1,
                                         ident.2 =ident.2,
@@ -313,17 +272,13 @@ A short list of manually curated markers was used in order to validate the diffe
         pbmc.markers$gene <- rownames(pbmc.markers)
         qvalue <- p.adjust(pbmc.markers$p_val, method = "BH",n=dim(object@assays$RNA@counts)[1])
         pbmc.markers$qvalue <- qvalue
-
         top <- pbmc.markers[pbmc.markers$p_val_adj<0.05,]
-
         to_fc <- top[order(abs(top$avg_logFC),decreasing = TRUE),]
         to_fc_gene <- rownames(to_fc)[1:50]
         #top10 <- top %>% top_n(n = 50, wt = abs(avg_logFC))
         #top10_genes<- rownames(top10)
-
         temp <- object[,object$condition%in%c(ident.1,ident.2)]
         temp$condition <- as.factor(as.vector(temp$condition))
-
         # debugonce(annotated_heat)
         pdf("Volcano.pdf")
         plot(EnhancedVolcano(pbmc.markers,
@@ -332,7 +287,6 @@ A short list of manually curated markers was used in order to validate the diffe
                         y = 'p_val_adj',subtitle = paste(ident.1,"vs",ident.2,"(FCcutoff=0.6)"),
                         xlim = c(-2, 2),FCcutoff = 0.6))
         dev.off()
-
         ICSWrapper::annotated_heat(object=temp,
                     row_annotation=c(1),
                     gene_list=to_fc_gene,
@@ -340,12 +294,11 @@ A short list of manually curated markers was used in order to validate the diffe
                     gene_list_name="DF_genes",
                     title=title,
                     ordering="condition",One_annot = TRUE)
-
         DefaultAssay(temp) <- "integrated"
         write.table(pbmc.markers, file = paste0(Sys.Date(),"_TO_EXP_each_",target,"_",title,".tsv"),row.names=FALSE, na="", sep="\t")
         setwd("../")
     }
-
+    # Apply DF
     mclapply(c(1:dim(cl_combinations)[2]),FUN=pairwise_df,object=Combined,cl_combinations=cl_combinations,mc.cores=1)
 </details>
 
@@ -362,8 +315,7 @@ A short list of manually curated markers was used in order to validate the diffe
     df_return_nt_cntrl <- list()
     df_return_nt_pink <- list()
     df_return_nt_all <- list()
-
-
+    # ===== Iterate through different DF files
     for (iter in 1:length(dirs_pairs)){
         dirs_iter <- dirs_pairs[iter]
         file <- paste0(dirs_iter ,"/", dir(dirs_iter, "*.tsv"))
@@ -380,21 +332,18 @@ A short list of manually curated markers was used in order to validate the diffe
         print(length(df_return_nt_pink[[iter]]))
         df_return_nt_all[[iter]] <- c(df_return_nt_cntrl[[iter]] ,df_return_nt_pink[[iter]])
     }
-
     # # ============= Intersect Common Genes
     cntrl_intesect <- Reduce(intersect, df_return_nt_cntrl)
     print(cntrl_intesect)
     pink_intesect <- Reduce(intersect, df_return_nt_pink)
     print(pink_intesect)
-
     length(cntrl_intesect)
     length(pink_intesect)
-
+    # ==== PLOT VENN
     pdf("Control_venn_diagramm.pdf")
     day06 <- c(df_return_nt_cntrl[[1]])
     day15 <- c(df_return_nt_cntrl[[2]])
     day21 <- c(df_return_nt_cntrl[[3]])
-
     # Generate plot
     v <- venn.diagram(list(Day06=day06, Day15=day15,Day21=day21),
                     fill = myCol,
@@ -407,18 +356,16 @@ A short list of manually curated markers was used in order to validate the diffe
     lapply(v,  names)
     # We are interested in the labels
     lapply(v, function(i) i$label)
-
     v[[11]]$label <- paste(intersect(intersect(day06, day15),day21), collapse="\n")  
     # plot  
     grid.newpage()
     grid.draw(v)
     dev.off()
-
+    # ======= PINK VENN
     pdf("PINK_venn_diagramm.pdf")
     day06 <- c(df_return_nt_pink[[1]])
     day15 <- c(df_return_nt_pink[[2]])
     day21 <- c(df_return_nt_pink[[3]])
-
     # Generate plot
     v <- venn.diagram(list(Day06=day06, Day15=day15,Day21=day21),
                     fill = myCol,
@@ -431,13 +378,11 @@ A short list of manually curated markers was used in order to validate the diffe
     lapply(v,  names)
     # We are interested in the labels
     lapply(v, function(i) i$label)
-
     v[[11]]$label <- paste(intersect(intersect(day06, day15),day21), collapse="\n")  
     # plot  
     grid.newpage()
     grid.draw(v)
     dev.off()
-
     setwd("../")
     # ----------------------------------------------------------------------------------------------
     ```
