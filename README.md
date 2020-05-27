@@ -36,7 +36,8 @@ EBs are cells at an early stage of spontaneous differentiation. Scorecard analys
 ## Libraries 
 <details><summary>Code</summary> 
 <p>
-```{r libraries}
+
+```r
 library(reticulate)
 use_python("C:/Users/dimitrios.kyriakis/AppData/Local/Continuum/anaconda3/envs/iscwrapper/python.exe", required = TRUE)
 options(future.globals.maxSize= 2122317824)
@@ -63,7 +64,8 @@ set.seed(123)
 ## Setting Up
 <details><summary>Code</summary> 
 <p>
-```{r setup}
+
+```r
 tool="seurat"
 project ="Michi_Data"
 dataset <- project
@@ -103,7 +105,8 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
 
 <details><summary>Code</summary> 
 <p>
-```{r readfiles}
+
+```r
 NewDir <- paste0(Sys.Date(),"_",tool,"_elbow_",elbow,"_Mito-",remove_mt,"_Ribo-",remove_ribsomal,"_SCT-",SCT,"_criteria_pass-",criteria_pass)
 dir.create(NewDir)
 setwd(NewDir)
@@ -119,6 +122,7 @@ Combined  <- Return_fun$Combined
 Data_List <- Return_fun$Data_List
 setwd("../")
 ```
+
 </p>
 </details>
 
@@ -135,7 +139,8 @@ The integration of the filtered matrices of the different datasets was performed
 
 <details><summary>Code</summary> 
 <p>
-```{r remapping}
+
+```r
 dir.create("Aligned_Cond_RegPhase")
 setwd("Aligned_Cond_RegPhase")
 DefaultAssay(Combined) <- "RNA"
@@ -159,6 +164,7 @@ DefaultAssay(object = Seurat.combined) <- "integrated"
 Combined <- Seurat.combined
 setwd("../")
 ```
+
 </p>
 </details>
 
@@ -172,7 +178,8 @@ The clustering of data was performed using Louvain clustering. The resolution of
 
 <details><summary>Code</summary> 
 <p>
-```{r Clustering}
+
+```r
 dir.create("Clusters")
 setwd("Clusters")
 Combined <- ICSWrapper::reduce_dim(Combined,project=project,assay = "SCT")$Combined#,resolution=c(0.1))$Combined
@@ -228,7 +235,8 @@ A short list of manually curated markers was used in order to validate the diffe
 
 <details><summary>Code</summary> 
 <p>
-```{r  Developmental_Markers}
+
+```r
 # ================================== Developmental Stages =========================================
 dir.create("Developmental_Markers")
 setwd("Developmental_Markers")
@@ -274,7 +282,8 @@ setwd("../")
 
 <details><summary>Code</summary> 
 <p>
-```{r Pairwise DF}
+
+```r
 # =============================== PAIRWISE DF ===============================================
 dir.create("DF_Pairwise_PAPER")
 setwd("DF_Pairwise_PAPER")
@@ -335,6 +344,7 @@ pairwise_df <- function (comb,object,cl_combinations){
 }
 # Apply DF
 mclapply(c(1:dim(cl_combinations)[2]),FUN=pairwise_df,object=Combined,cl_combinations=cl_combinations,mc.cores=1)
+```
 </p>
 </details>
 
@@ -344,7 +354,8 @@ mclapply(c(1:dim(cl_combinations)[2]),FUN=pairwise_df,object=Combined,cl_combina
 
 <details><summary>Code</summary> 
 <p>
-```{r gene intersection}
+
+```r
 dirs_pairs <- list.dirs("C:/Users/dimitrios.kyriakis/Desktop/PhD/Projects/Michi_Data/DF_Pairwise_Networks/DF_Pairwise_PAPER",full.names = TRUE )[-1]
 dirs_pairs <- grep('IPSC|D06.*D06|D15.*D15|D21.*D21',dirs_pairs,value = TRUE)
 dirs_pairs <- dirs_pairs[-4]
