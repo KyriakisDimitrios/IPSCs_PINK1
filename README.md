@@ -64,7 +64,6 @@ set.seed(123)
 <details><summary>Code</summary> 
 <p>
 ```{r setup}
-# ================================ SETTING UP ======================================== #
 tool="seurat"
 project ="Michi_Data"
 dataset <- project
@@ -82,7 +81,6 @@ color_cond <- c( "magenta4", "#007A87",brewer.pal(6,"Dark2")[-1],"#FF5A5F","blac
 color_clust <- c(brewer.pal(12,"Paired")[-11],"black","gray","magenta4","seagreen4",brewer.pal(9,"Set1")[-6],brewer.pal(8,"Dark2"))
 color_cells <- c(brewer.pal(9,"Set1")[-6],"goldenrod4","darkblue","seagreen4")
 color_list <- list(condition=color_cond,Cluster=color_clust,Cell_Type=color_cells,State=color_clust)
-# ========= Parameters
 imputation = FALSE
 remove_mt=FALSE
 remove_ribsomal=FALSE
@@ -106,7 +104,6 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
 <details><summary>Code</summary> 
 <p>
 ```{r readfiles}
-# ======== Perform an integrated analysis ====
 NewDir <- paste0(Sys.Date(),"_",tool,"_elbow_",elbow,"_Mito-",remove_mt,"_Ribo-",remove_ribsomal,"_SCT-",SCT,"_criteria_pass-",criteria_pass)
 dir.create(NewDir)
 setwd(NewDir)
@@ -141,7 +138,6 @@ The integration of the filtered matrices of the different datasets was performed
 ```{r remapping}
 dir.create("Aligned_Cond_RegPhase")
 setwd("Aligned_Cond_RegPhase")
-# ================================== ALLIGN CONDITIONS =========================================
 DefaultAssay(Combined) <- "RNA"
 Combined$condition <- factor(as.factor(Combined$condition), levels = c("Control_IPSCs", "Control_D06"  ,"Control_D10",   "Control_D15",   "Control_D21",
 "PINK1_IPSCs","PINK1_D06",     "PINK1_D15",     "PINK1_D21"))
@@ -152,7 +148,6 @@ pink.list <-SplitObject(Combined,split.by = "Treatment")
 for (i in 1:length(pink.list)) {
     pink.list[[i]] <- SCTransform(pink.list[[i]], verbose = FALSE,vars.to.regress=c("G2M.Score","S.Score"))
 }
-# doi: https://doi.org/10.1101/576827
 int.features <- SelectIntegrationFeatures(object.list = pink.list, nfeatures = 3000)
 pink.list <- PrepSCTIntegration(object.list = pink.list, anchor.features = int.features,
                                     verbose = FALSE)
@@ -178,7 +173,6 @@ The clustering of data was performed using Louvain clustering. The resolution of
 <details><summary>Code</summary> 
 <p>
 ```{r Clustering}
-# ================================== Clustering =========================================
 dir.create("Clusters")
 setwd("Clusters")
 Combined <- ICSWrapper::reduce_dim(Combined,project=project,assay = "SCT")$Combined#,resolution=c(0.1))$Combined
