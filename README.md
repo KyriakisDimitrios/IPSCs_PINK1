@@ -9,26 +9,31 @@ Parkinson’s disease (PD) is the second most prevalent neurodegenerative disord
 
 
 # Libraries 
-```{r libraries, include=FALSE}
-library(reticulate)
-use_python("C:/Users/dimitrios.kyriakis/AppData/Local/Continuum/anaconda3/envs/iscwrapper/python.exe", required = TRUE)
-options(future.globals.maxSize= 2122317824)
-library(sctransform)
-library(Seurat)
-ibrary( RColorBrewer)
-library(tictoc)
-library(crayon)
-library(stringr)
-library(Routliers)
-library(jcolors)
-library(cluster)
-library(garnett)
-library(NMF)
-library(ggplot2)
-library(ggpubr)
-library(cowplot)
-set.seed(123)
-```
+<details>
+  <summary>Code</summary>
+
+    ```{r libraries, include=FALSE}
+    library(reticulate)
+    use_python("C:/Users/dimitrios.kyriakis/AppData/Local/Continuum/anaconda3/envs/iscwrapper/python.exe", required = TRUE)
+    options(future.globals.maxSize= 2122317824)
+    library(sctransform)
+    library(Seurat)
+    ibrary( RColorBrewer)
+    library(tictoc)
+    library(crayon)
+    library(stringr)
+    library(Routliers)
+    library(jcolors)
+    library(cluster)
+    library(garnett)
+    library(NMF)
+    library(ggplot2)
+    library(ggpubr)
+    library(cowplot)
+    set.seed(123)
+    ```
+</details>
+
 
 # Setting Up  
 ```{r setup, include=FALSE}
