@@ -1,5 +1,7 @@
 # PINK1 shows LRRK2, Parkin, and SNCA as part of the Parkinson’s network.
 
+# Authors
+Gabriela Novak, Dimitrios Kyriakis, Kamil Grzyb, Michela Bernini, Alexander Skupin
 
 # Abstract
 
@@ -432,6 +434,81 @@ grid.draw(v)
 dev.off()
 setwd("../")
 # ----------------------------------------------------------------------------------------------
+```
+</p>
+</details>
+
+
+
+
+## Session Info
+
+<details><summary>Code</summary> 
+<p>
+
+```r
+
+
+R version 3.6.2 (2019-12-12)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 18363)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252  LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252 LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+ [1] grid      stats4    parallel  stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] gridBase_0.4-7              VennDiagram_1.6.20          futile.logger_1.4.3        
+ [4] gridExtra_2.3               viridis_0.5.1               viridisLite_0.3.0          
+ [7] forcats_0.5.0               dplyr_0.8.5                 purrr_0.3.3                
+[10] readr_1.3.1                 tidyr_1.0.2                 tibble_3.0.0               
+[13] tidyverse_1.3.0             cowplot_1.0.0               ggpubr_0.2.5               
+[16] magrittr_1.5                ggplot2_3.3.0               NMF_0.22.0                 
+[19] rngtools_1.5                pkgmaker_0.31.1             registry_0.5-1             
+[22] garnett_0.2.9               monocle3_0.2.1.5            SingleCellExperiment_1.8.0 
+[25] SummarizedExperiment_1.16.1 DelayedArray_0.12.3         BiocParallel_1.20.1        
+[28] matrixStats_0.56.0          GenomicRanges_1.38.0        GenomeInfoDb_1.22.1        
+[31] IRanges_2.20.2              S4Vectors_0.24.4            Biobase_2.46.0             
+[34] BiocGenerics_0.32.0         cluster_2.1.0               jcolors_0.0.4              
+[37] Routliers_0.0.0.3           stringr_1.4.0               crayon_1.3.4               
+[40] tictoc_1.0                  RColorBrewer_1.1-2          Seurat_3.1.5               
+[43] sctransform_0.2.1           reticulate_1.15            
+
+loaded via a namespace (and not attached):
+  [1] readxl_1.3.1           backports_1.1.6        plyr_1.8.6             igraph_1.2.5          
+  [5] lazyeval_0.2.2         splines_3.6.2          listenv_0.8.0          digest_0.6.23         
+  [9] foreach_1.5.0          htmltools_0.4.0        gdata_2.18.0           fansi_0.4.1           
+ [13] doParallel_1.0.15      ROCR_1.0-7             globals_0.12.5         modelr_0.1.6          
+ [17] prettyunits_1.1.1      colorspace_1.4-1       rvest_0.3.5            ggrepel_0.8.2         
+ [21] haven_2.2.0            RCurl_1.98-1.1         jsonlite_1.6           graph_1.64.0          
+ [25] survival_3.1-11        zoo_1.8-7              iterators_1.0.12       ape_5.3               
+ [29] glue_1.4.0             gtable_0.3.0           zlibbioc_1.32.0        XVector_0.26.0        
+ [33] leiden_0.3.3           future.apply_1.4.0     abind_1.4-5            scales_1.1.0          
+ [37] futile.options_1.0.1   DBI_1.1.0              bibtex_0.4.2.2         Rcpp_1.0.4.6          
+ [41] xtable_1.8-4           progress_1.2.2         rsvd_1.0.3             tsne_0.1-3            
+ [45] htmlwidgets_1.5.1      httr_1.4.1             gplots_3.0.3           ellipsis_0.3.0        
+ [49] ica_1.0-2              farver_2.0.3           pkgconfig_2.0.3        uwot_0.1.8            
+ [53] dbplyr_1.4.2           labeling_0.3           tidyselect_1.0.0       rlang_0.4.5           
+ [57] reshape2_1.4.3         cellranger_1.1.0       munsell_0.5.0          tools_3.6.2           
+ [61] cli_2.0.2              generics_0.0.2         broom_0.5.5            ggridges_0.5.2        
+ [65] npsurv_0.4-0           fs_1.4.1               fitdistrplus_1.0-14    caTools_1.18.0        
+ [69] RANN_2.6.1             pbapply_1.4-2          future_1.16.0          nlme_3.1-145          
+ [73] formatR_1.7            xml2_1.3.1             compiler_3.6.2         rstudioapi_0.11       
+ [77] plotly_4.9.2.1         png_0.1-7              lsei_1.2-0             ggsignif_0.6.0        
+ [81] reprex_0.3.0           stringi_1.4.6          lattice_0.20-41        Matrix_1.2-18         
+ [85] vctrs_0.2.4            pillar_1.4.3           lifecycle_0.2.0        lmtest_0.9-37         
+ [89] RcppAnnoy_0.0.16       data.table_1.12.8      bitops_1.0-6           irlba_2.3.3           
+ [93] patchwork_1.0.0.9000   R6_2.4.1               KernSmooth_2.23-16     codetools_0.2-16      
+ [97] lambda.r_1.2.4         MASS_7.3-51.5          gtools_3.8.2           assertthat_0.2.1      
+[101] MAST_1.12.0            withr_2.1.2            GenomeInfoDbData_1.2.2 hms_0.5.3             
+[105] ICSWrapper_0.2.2       Rtsne_0.15             lubridate_1.7.8    
+
 ```
 </p>
 </details>
