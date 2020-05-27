@@ -442,7 +442,7 @@ dev.off()
 
 
 ![f3_Common_net](Figures/f3_Common_net.jpg)
-**Supl.Figure2:** 
+**Figure ?:** Common network from GeneMania and correlation network of the examined data. 
 
 
 ## Session Info
