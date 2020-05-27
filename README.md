@@ -62,7 +62,7 @@ EBs are cells at an early stage of spontaneous differentiation. Scorecard analys
 ## Setting Up
 <details>
   <summary>Code</summary>  
-    ```{r setup, include=FALSE}
+    ```{r setup}
     # ================================ SETTING UP ======================================== #
     tool="seurat"
     project ="Michi_Data"
