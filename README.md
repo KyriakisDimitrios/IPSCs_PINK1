@@ -35,7 +35,7 @@ EBs are cells at an early stage of spontaneous differentiation. Scorecard analys
 
 ## Libraries 
 <details>
-  <summary>Code</summary>
+    <summary>Code</summary>
     ```{r libraries, include=FALSE}
     library(reticulate)
     use_python("C:/Users/dimitrios.kyriakis/AppData/Local/Continuum/anaconda3/envs/iscwrapper/python.exe", required = TRUE)
@@ -61,7 +61,7 @@ EBs are cells at an early stage of spontaneous differentiation. Scorecard analys
 
 ## Setting Up
 <details>
-  <summary>Code</summary>  
+    <summary>Code</summary>  
     ```{r setup}
     # ================================ SETTING UP ======================================== #
     tool="seurat"
@@ -102,7 +102,7 @@ Additional to this filtering, we defined cells as low-quality, based on three cr
 
 
 <details>
-  <summary>Code</summary>  
+    <summary>Code</summary>  
     ```{r readfiles}
     # ======== Perform an integrated analysis ====
     NewDir <- paste0(Sys.Date(),"_",tool,"_elbow_",elbow,"_Mito-",remove_mt,"_Ribo-",remove_ribsomal,"_SCT-",SCT,"_criteria_pass-",criteria_pass)
@@ -134,7 +134,7 @@ The integration of the filtered matrices of the different datasets was performed
 
 
 <details>
-  <summary>Code</summary> 
+    <summary>Code</summary> 
     ```{r remapping}
     dir.create("Aligned_Cond_RegPhase")
     setwd("Aligned_Cond_RegPhase")
@@ -171,7 +171,7 @@ The clustering of data was performed using Louvain clustering. The resolution of
 
 
 <details>
-  <summary>Code</summary> 
+    <summary>Code</summary> 
     ```{r Clustering}
     # ================================== Clustering =========================================
     dir.create("Clusters")
