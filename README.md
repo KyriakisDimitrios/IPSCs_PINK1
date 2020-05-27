@@ -7,44 +7,15 @@ Parkinson’s disease (PD) is the second most prevalent neurodegenerative disord
 
 
 
-# 
 
-
-
-```{r setup, include=FALSE}
+# Libraries 
+```{r libraries, include=FALSE}
 library(reticulate)
 use_python("C:/Users/dimitrios.kyriakis/AppData/Local/Continuum/anaconda3/envs/iscwrapper/python.exe", required = TRUE)
 options(future.globals.maxSize= 2122317824)
-# py_config()
-
-#library(ICSWrapper)
 library(sctransform)
 library(Seurat)
-set.seed(123)
-tool="seurat"
-project ="Michi_Data"
-dataset <- project
-Data_select <- ICSWrapper::data_selection(project)
-WORKDIR <- Data_select$WORKDIR
-list_of_files <- Data_select$list_of_files
-condition_names <- Data_select$condition_names
-
-
-condition_names <- condition_names[c(1,2,3,4,5,6,8,28,29)]
-list_of_files <- list_of_files[c(1,2,3,4,5,6,8,28,29)]
-
-# Extented 
-# condition_names <- condition_names[c(1,2,4,5,6,8,12,15,25,27,28,29)]
-# list_of_files <- list_of_files[c(1,2,4,5,6,8,12,15,25,27,28,29)]
-
-organism<- Data_select$organism
-file<- Data_select$file
-data_10x<- Data_select$data_10x
-
-setwd(Data_select$WORKDIR)
-
-library(Seurat)
-library( RColorBrewer)
+ibrary( RColorBrewer)
 library(tictoc)
 library(crayon)
 library(stringr)
@@ -56,23 +27,30 @@ library(NMF)
 library(ggplot2)
 library(ggpubr)
 library(cowplot)
+set.seed(123)
+```
 
-colormap_d<- c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928',"black","gray")
-color_cond  <- c(brewer.pal(8,"Dark2"),"black","gray","magenta4","seagreen4")[c(5,1,2,3,4,9,6,7,8)]
-
-color_cond  <- c("#FF5A5F", "#FFB400", "#007A87", "#8CE071",brewer.pal(4,"Dark2")[-1],"black","magenta4","seagreen4",brewer.pal(9,"Set1")[-6])[c(5,1,2,3,4,9,6,7,8)]
-
-
+# Setting Up  
+```{r setup, include=FALSE}
+# ================================ SETTING UP ======================================== #
+tool="seurat"
+project ="Michi_Data"
+dataset <- project
+Data_select <- ICSWrapper::data_selection(project)
+WORKDIR <- Data_select$WORKDIR
+list_of_files <- Data_select$list_of_files
+condition_names <- Data_select$condition_names
+condition_names <- condition_names[c(1,2,3,4,5,6,8,28,29)]
+list_of_files <- list_of_files[c(1,2,3,4,5,6,8,28,29)]
+organism<- Data_select$organism
+file<- Data_select$file
+data_10x<- Data_select$data_10x
+setwd(Data_select$WORKDIR)
 color_cond <- c( "magenta4", "#007A87",brewer.pal(6,"Dark2")[-1],"#FF5A5F","black")
-
 color_clust <- c(brewer.pal(12,"Paired")[-11],"black","gray","magenta4","seagreen4",brewer.pal(9,"Set1")[-6],brewer.pal(8,"Dark2"))
 color_cells <- c(brewer.pal(9,"Set1")[-6],"goldenrod4","darkblue","seagreen4")
 color_list <- list(condition=color_cond,Cluster=color_clust,Cell_Type=color_cells,State=color_clust)
-# color_cells <-primary.colors(15, steps = 3, no.white = TRUE)
 
-
-
-# ================================ SETTING UP ======================================== #
 # Number of cells to use
 imputation = FALSE
 remove_mt=FALSE
@@ -91,8 +69,7 @@ The identification of the low quality cells was done separately in each data set
 Additional to this filtering, we defined cells as low-quality, based on three criteria for each cell. The number of the genes that expressed is more than 200 and 2 median-absolute- deviations (MADs) above the median, the total number of counts is 2 MADs above or below the median and the percentage of counts to mitochondrial genes is 1.5 median-absolute- deviations (MADs) above the median. Cells failing at least one criteria were considered as low quality cells and filtered out from further analysis. Similar to the cell filtering, we filtered out the low quality genes that been expressed in less than 10 cells in the data. 
 
 
-
-```{r read}
+```{r readfiles}
 # options(future.globals.maxSize= 2122317824)
 # ==============================================================================================
 # ================================ Setup the Seurat objects ====================================
@@ -103,9 +80,6 @@ dir.create(NewDir)
 setwd(NewDir)
 dir.create("QC")
 setwd("QC")
-
-# debugonce(create_cds)
-
 
 Return_fun <- ICSWrapper::create_cds2(list_of_files=list_of_files,
                                       condition_names=condition_names,
