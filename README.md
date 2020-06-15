@@ -445,6 +445,14 @@ dev.off()
 **Figure ?:** Common network from GeneMania and correlation network of the examined data. 
 
 
+
+##
+Diffence from the common f
+PINK and COntrold and all
+Ubitiquination
+Mittocondrial
+
+
 ## Session Info
 
 <details><summary>Code</summary> 
