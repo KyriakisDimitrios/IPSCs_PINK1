@@ -441,9 +441,11 @@ dev.off()
 </details>
 
 
-![f3_Common_net](Figures/f3_Common_net.jpg)
+![Network_DE_only](Figures/Network_DE_only.jpg)
 **Figure ?:** Common network from GeneMania and correlation network of the examined data. 
 
+![Network_Extented(Ubiq-Mito)](Figures/Network_Extented(Ubiq-Mito).jpg)
+**Figure ?:** Common network from GeneMania and correlation network of the examined data. 
 
 
 ##
