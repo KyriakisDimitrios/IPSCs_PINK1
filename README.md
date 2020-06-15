@@ -4,7 +4,7 @@
 Gabriela Novak, Dimitrios Kyriakis, Kamil Grzyb, Michela Bernini, Alexander Skupin
 
 # Google Docs
-https://drive.google.com/drive/folders/1xoEtZF-J95cBWNCMLy2bk0pyJo4HLyX_
+https://drive.google.com/drive/folders/1xoEtZF-J95cBWNCMLy2bk0pyJo4HLyX_?usp=sharing
 
 # Abstract
 
