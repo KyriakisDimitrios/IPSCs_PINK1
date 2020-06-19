@@ -299,9 +299,18 @@ PINK1<-subset(Combined,Treatment=="PINK")
 dataset <- as.data.frame(Combined@assays$RNA@data)
 
 
-
+net_analysis="extented"
+net_analysis="net"
 # DF
-graph_annotation <- read.csv("NODES_and_pathways_11.6.20.csv")
+graph_annotation <- read.csv("NODES_and_pathways_11.6.20_9.csv")
+graph_annotation$group1 <- as.vector(graph_annotation$group1)
+graph_annotation$group1[graph_annotation$group1==""] <- "NA"
+first_graph <- read.csv("RUN_12_EDGES_ST_GM_REMERGE_used_11_6_20.csv")
+
+
+
+
+# =============== ANNOTATION ========================
 ann_genes <- c(as.vector(graph_annotation$Id))
 ann_genes <- toupper(ann_genes)
 ann_genes <- gsub("-", ".", ann_genes, fixed = TRUE)
@@ -313,14 +322,12 @@ ann_genes[ann_genes=="PARKIN"] <- "PARK2"
 ann_genes[ann_genes=="PD2"] <- "PAF1"
 ann_genes[ann_genes=="ERV1"] <- "GFER"
 ann_genes[ann_genes=="RM1"] <- "TIPARP"
+# ----------------------------------------------------
 
-
-
-# Net
-# DF
-first_graph <- read.csv("RUN_12_EDGES_ST_GM_REMERGE_used_11_6_20.csv")
+# ================ NETWORK ========================
 first_graph$Source <- toupper(gsub("-", ".", first_graph$Source , fixed = TRUE))
 first_graph$Target <- toupper(gsub("-", ".", first_graph$Target , fixed = TRUE))
+# ====== SOURCE
 first_graph$Source[first_graph$Source=="ENSG00000173575"] <- "CHD2"
 first_graph$Source[first_graph$Source=="ENSG00000279576"] <- "MALAT1"
 first_graph$Source[first_graph$Source=="GPR128"] <- "ADGRG7"
@@ -329,6 +336,7 @@ first_graph$Source[first_graph$Source=="PARKIN"] <- "PARK2"
 first_graph$Source[first_graph$Source=="PD2"] <- "PAF1"
 first_graph$Source[first_graph$Source=="ERV1"] <- "GFER"
 first_graph$Source[first_graph$Source=="RM1"] <- "TIPARP"
+#=== Target
 first_graph$Target[first_graph$Target=="ENSG00000173575"] <- "CHD2"
 first_graph$Target[first_graph$Target=="ENSG00000279576"] <- "MALAT1"
 first_graph$Target[first_graph$Target=="GPR128"] <- "ADGRG7"
@@ -337,21 +345,22 @@ first_graph$Target[first_graph$Target=="PARKIN"] <- "PARK2"
 first_graph$Target[first_graph$Target=="PD2"] <- "PAF1"
 first_graph$Target[first_graph$Target=="ERV1"] <- "GFER"
 first_graph$Target[first_graph$Target=="RM1"] <- "TIPARP"
+# ----------------------------------------------------
+
+# first_graph <- first_graph[first_graph$Target%in%df151_genes & first_graph$Source %in% df151_genes,]
 
 
 f_g_genes <- unique(c(as.vector(first_graph$Source),as.vector(first_graph$Target))) 
 f_g_genes <- toupper(f_g_genes)
 f_g_genes <- gsub("-", ".", f_g_genes, fixed = TRUE)
-
 r_f_g_genes <- f_g_genes[f_g_genes%in% rownames(dataset)]
 cat(paste("Genes not in dataset:",
-length(f_g_genes)-length(r_f_g_genes)))
+          length(f_g_genes)-length(r_f_g_genes)))
 missing <- setdiff(f_g_genes, r_f_g_genes)
 cat(missing)
 # res_mis <- GeneSymbolThesarus(missing)
 match(missing,annot_29$Id)
 match(missing,annot_29$Label)
-
 
 
 r_first_graph <- first_graph[first_graph$Source %in% r_f_g_genes,]
@@ -378,15 +387,16 @@ E(g2)$weight[match(edge_cor3,as_ids(E(g2)))]<-5
 
 # ----------
 
-# gABRIELA nET
-color_clust<-color_clust[-3]
+# ===================== COLOR PALETTE ==============================
 color_clust<-categorical_pal(8)
+color_clust[5] <- color_clust[7]
+color_clust[1] <-"#0072B2"
 color_clust[6] <- "red"
+color_clust[2] <- "gray"
 
 g1 <- graph_from_data_frame(first_graph,directed = FALSE)
 color_facts <- as.factor(graph_annotation$group1[match(as_ids(V(g1)),ann_genes)])
-
-Color_rest <-categorical_pal(8)[color_facts]
+Color_rest <-color_clust[color_facts]
 Color_rest[Color_rest=="#D55E00"] <- "red"
 V(g1)$cex <- 0.05
 V(g1)$label.cex <-0.25
@@ -394,8 +404,6 @@ V(g1)$label.color="black"
 V(g1)$color <- Color_rest
 
 set.seed(1234)
-e <- get.edgelist(g1,names=FALSE)
-l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g1))
 g1<- igraph::simplify(g1)
 # ============================
 
@@ -405,37 +413,37 @@ pdf("Network_DE_only.pdf",width=12,height=10)
 set.seed(123)
 locs <- layout_on_sphere(g1)*0.4
 
-col_added<- unlist(lapply(color_facts,FUN = function(x){ if(x %in% c("A","B","C","B-PD")){return(1)}else{return(2)}}))
-col_added[col_added==1] <- "Differentially Expressed"
-col_added[col_added==2] <- "Added"
-col_added<-as.factor(col_added)
-V(g1)$color <- col_added
-plot(g1, vertex.size=5, vertex.label.cex=0.3,vertex.label.color="black",vertex.frame.width =0,
-     layout=locs, 
-     main="Original")
-legend("bottomleft",bty = "n",
-                       legend=levels(col_added),fil=categorical_pal(8)[1:2], horiz=F)
+e <- get.edgelist(g1,names=FALSE)
+locs <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g1),
+                                          area=50*(vcount(g1)^3),repulse.rad=(vcount(g1)^4.1))
+
+
+
+col_added<- unlist(lapply(color_facts,FUN = function(x){ if(x %in% c("A","B","C","B-PD")){return(1)}else{return(2)}}))    
 
 V(g1)$color <- Color_rest
 
-plot(g1,  vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,vertex.size=5,
-     layout=locs, 
-     main="Original")
+plot(g1,  vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
+     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     layout=locs)
 legend("bottomleft",bty = "n",
-                       legend=levels(color_facts),
-                       fill= color_clust, horiz=F)
+       legend=levels(color_facts),
+       fill= color_clust, horiz=F)
 
 
 bet<-betweenness(g1)
 n <- vcount(g1)
-test_bet <- (2 * bet) / (n*n - 3*n + 2) * 100
+test_bet <- (2 * bet) / (n*n - 3*n + 2) * 500
 
-plot(g1,  vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,vertex.size=test_bet,
+test_bet<-scale(bet,center = 0)+4
+
+plot(g1, vertex.label.color="black",vertex.label.font=11,
+     vertex.size2=5, vertex.label.cex=0.7,vertex.size=test_bet,
      layout=locs, 
      main="Original")
 legend("bottomleft",bty = "n",
-                       legend=levels(color_facts),
-                       fill= color_clust, horiz=F)
+       legend=levels(color_facts),
+       fill= color_clust, horiz=F)
 
 
 # Remove a few vertices
@@ -445,24 +453,50 @@ test2<-add_edges(test1,get.edgelist(g2))
 test3<- igraph::simplify(test2, remove.multiple = TRUE, remove.loops = TRUE)
 
 # Add weight
-E(test3)$weight <- rep(1,length(as_ids(E(test3))))
+E(test3)$weight <- rep(1.0,length(as_ids(E(test3))))
 g4_edge_cor2 <- as_ids(E(test3))[as_ids(E(test3))%in%as_ids(E(g_cor2))]
-E(test3)$weight[match(g4_edge_cor2,as_ids(E(test3)))]<-2
+E(test3)$weight[match(g4_edge_cor2,as_ids(E(test3)))]<-2.5
 g4_edge_cor3 <- as_ids(E(test3))[as_ids(E(test3))%in%as_ids(E(g_cor3))]
-E(test3)$weight[match(g4_edge_cor3,as_ids(E(test3)))]<-4
-E(test3)$width <- E(test3)$weight
-E(test3)$test3 <- c("black","red","yellow")[E(test3)$weight]
+E(test3)$weight[match(g4_edge_cor3,as_ids(E(test3)))]<-5.0
 cor_r <- E(test3)$weight
 cor_r[cor_r==1.0] <- 0.1
 cor_r[cor_r==2.5] <- 0.2
 cor_r[cor_r==5.0] <- 0.3
 
+
+corr_edge_color <- cor_r
+corr_edge_color[corr_edge_color==0.1] <- "gray"
+corr_edge_color[corr_edge_color==0.2] <- "orange"
+corr_edge_color[corr_edge_color==0.3] <- "red"
+
+corr_edge_width <- cor_r
+corr_edge_width[cor_r==0.1] <- 1
+corr_edge_width[cor_r==0.2] <- 2.5
+corr_edge_width[cor_r==0.3] <- 5
+
+
+E(test3)$weight <- 1
+E(test3)$color <- corr_edge_color
+E(test3)$width <- corr_edge_width
+
+
 ## To check the result
-plot(test3, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
+plot(test3, vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
+     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
+
+
 legend("bottomleft",inset = c(0, 0),bty = "n",
        legend=levels(color_facts),
        fill= color_clust,
        horiz=F,title="Nodes")
+
+legend("bottomleft",inset = c(0.15, 0),
+       bty = "n", title="Edges",
+       legend=levels(as.factor(cor_r)),
+       fill=  c("gray","orange","red"),
+       horiz=F)
+
+# ----------------------------------------------------------------------------------------------------
 
 
 # =============================== COMMON EDGES =======================================================
@@ -480,8 +514,6 @@ g4_edge_cor2 <- as_ids(E(common5))[as_ids(E(common5))%in%as_ids(E(g_cor2))]
 E(common5)$weight[match(g4_edge_cor2,as_ids(E(common5)))]<-2.5
 g4_edge_cor3 <- as_ids(E(common5))[as_ids(E(common5))%in%as_ids(E(g_cor3))]
 E(common5)$weight[match(g4_edge_cor3,as_ids(E(common5)))]<-5
-E(common5)$width <- E(common5)$weight
-E(common5)$color <- c("black","red","yellow")[E(common5)$weight]
 
 
 cor_r <- E(common5)$weight
@@ -489,55 +521,28 @@ cor_r[cor_r==1.0] <- 0.1
 cor_r[cor_r==2.5] <- 0.2
 cor_r[cor_r==5.0] <- 0.3
 
-plot(common5, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,
-     layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),], 
-     main="Common")
+common_edge_color <- cor_r
+common_edge_color[common_edge_color==0.1] <- "gray"
+common_edge_color[common_edge_color==0.2] <- "orange"
+common_edge_color[common_edge_color==0.3] <- "red"
+
+common_edge_width <- cor_r
+common_edge_width[cor_r==0.1] <- 1
+common_edge_width[cor_r==0.2] <- 2.5
+common_edge_width[cor_r==0.3] <- 5
+
+
+E(common5)$weight <- 1
+E(common5)$color <- common_edge_color
+E(common5)$width <- common_edge_width
+
+plot(common5,vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
+     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),])
 legend("bottomleft",inset = c(0.15, 0),
        bty = "n", title="Edges",
        legend=levels(as.factor(cor_r)),
-       fill=  c("black","red","yellow"),
-       horiz=F)
-
-legend("bottomleft",inset = c(0, 0),bty = "n",
-       legend=levels(color_facts),
-       fill= color_clust,
-       horiz=F,title="Nodes")
-
-
-
-# =================================== PLOT ALL TOGETHR ===============================================
-par(mfrow=c(2,2))
-V(g1)$color <- col_added
-plot(g1, vertex.size=5, vertex.label.cex=0.3,vertex.label.color="black",vertex.frame.width =0,
-     layout=locs, 
-     main="Original")
-legend("bottomleft",bty = "n",
-                       legend=levels(col_added),fil=categorical_pal(8)[1:2], horiz=F)
-color <- Color_rest
-V(g1)$color <- Color_rest
-
-plot(g1, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,
-     layout=locs, 
-     main="Original")
-legend("bottomleft",bty = "n",
-                       legend=levels(color_facts),
-                       fill= color_clust, horiz=F)
-
-
-plot(test3, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
-legend("bottomleft",inset = c(0, 0),bty = "n",
-       legend=levels(color_facts),
-       fill= color_clust,
-       horiz=F,title="Nodes")
-
-
-plot(common5, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,
-     layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),], 
-     main="Common")
-legend("bottomleft",inset = c(0.2, 0),
-       bty = "n", title="Edges",
-       legend=levels(as.factor(cor_r)),
-       fill=  c("black","red","yellow"),
+       fill=  c("gray","orange","red"),
        horiz=F)
 
 legend("bottomleft",inset = c(0, 0),bty = "n",
@@ -547,6 +552,7 @@ legend("bottomleft",inset = c(0, 0),bty = "n",
 
 
 dev.off()
+
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
@@ -573,8 +579,18 @@ PINK1<-subset(Combined,Treatment=="PINK")
 dataset <- as.data.frame(Combined@assays$RNA@data)
 
 
+net_analysis="extented"
+
 # Ubiq
 graph_annotation <- read.csv("NODES_May_29_Manual_Mito_Ubiq.csv")
+# Net
+first_graph <- read.csv("EDGES_part1_manual_May 29.csv")
+graph_annotation$group1 <- as.vector(graph_annotation$group1)
+graph_annotation$group1 <- unlist(lapply(graph_annotation$group1,FUN = function(x){ if(x %in% c("A","B","C","B-PD")){return("DE")}else{return(x)}}))
+
+
+
+# =============== ANNOTATION ========================
 ann_genes <- c(as.vector(graph_annotation$Id))
 ann_genes <- toupper(ann_genes)
 ann_genes <- gsub("-", ".", ann_genes, fixed = TRUE)
@@ -586,14 +602,12 @@ ann_genes[ann_genes=="PARKIN"] <- "PARK2"
 ann_genes[ann_genes=="PD2"] <- "PAF1"
 ann_genes[ann_genes=="ERV1"] <- "GFER"
 ann_genes[ann_genes=="RM1"] <- "TIPARP"
+# ----------------------------------------------------
 
-
-
-# Net
-# Ubiq
-first_graph <- read.csv("EDGES_part1_manual_May 29.csv")
+# ================ NETWORK ========================
 first_graph$Source <- toupper(gsub("-", ".", first_graph$Source , fixed = TRUE))
 first_graph$Target <- toupper(gsub("-", ".", first_graph$Target , fixed = TRUE))
+# ====== SOURCE
 first_graph$Source[first_graph$Source=="ENSG00000173575"] <- "CHD2"
 first_graph$Source[first_graph$Source=="ENSG00000279576"] <- "MALAT1"
 first_graph$Source[first_graph$Source=="GPR128"] <- "ADGRG7"
@@ -602,8 +616,7 @@ first_graph$Source[first_graph$Source=="PARKIN"] <- "PARK2"
 first_graph$Source[first_graph$Source=="PD2"] <- "PAF1"
 first_graph$Source[first_graph$Source=="ERV1"] <- "GFER"
 first_graph$Source[first_graph$Source=="RM1"] <- "TIPARP"
-
-
+#=== Target
 first_graph$Target[first_graph$Target=="ENSG00000173575"] <- "CHD2"
 first_graph$Target[first_graph$Target=="ENSG00000279576"] <- "MALAT1"
 first_graph$Target[first_graph$Target=="GPR128"] <- "ADGRG7"
@@ -612,21 +625,22 @@ first_graph$Target[first_graph$Target=="PARKIN"] <- "PARK2"
 first_graph$Target[first_graph$Target=="PD2"] <- "PAF1"
 first_graph$Target[first_graph$Target=="ERV1"] <- "GFER"
 first_graph$Target[first_graph$Target=="RM1"] <- "TIPARP"
+# ----------------------------------------------------
+
+# first_graph <- first_graph[first_graph$Target%in%df151_genes & first_graph$Source %in% df151_genes,]
 
 
 f_g_genes <- unique(c(as.vector(first_graph$Source),as.vector(first_graph$Target))) 
 f_g_genes <- toupper(f_g_genes)
 f_g_genes <- gsub("-", ".", f_g_genes, fixed = TRUE)
-
 r_f_g_genes <- f_g_genes[f_g_genes%in% rownames(dataset)]
 cat(paste("Genes not in dataset:",
-length(f_g_genes)-length(r_f_g_genes)))
+          length(f_g_genes)-length(r_f_g_genes)))
 missing <- setdiff(f_g_genes, r_f_g_genes)
 cat(missing)
 # res_mis <- GeneSymbolThesarus(missing)
 match(missing,annot_29$Id)
 match(missing,annot_29$Label)
-
 
 
 r_first_graph <- first_graph[first_graph$Source %in% r_f_g_genes,]
@@ -653,15 +667,19 @@ E(g2)$weight[match(edge_cor3,as_ids(E(g2)))]<-5
 
 # ----------
 
-# gABRIELA nET
-color_clust<-color_clust[-3]
+# ===================== COLOR PALETTE ==============================
 color_clust<-categorical_pal(8)
-color_clust[6] <- "red"
+
+color_clust[5] <- color_clust[7]
+color_clust[3] <- "red"
+
+color_clust<-sns.palplot(sns.color_palette("colorblind", 8))
+color_clust<- c( "#E69F00","#0072B2", "red","#56B4E9","#009E73","#F0E442", "#D55E00", "#CC79A7","#999999")
+
 
 g1 <- graph_from_data_frame(first_graph,directed = FALSE)
 color_facts <- as.factor(graph_annotation$group1[match(as_ids(V(g1)),ann_genes)])
-
-Color_rest <-categorical_pal(8)[color_facts]
+Color_rest <-color_clust[color_facts]
 Color_rest[Color_rest=="#D55E00"] <- "red"
 V(g1)$cex <- 0.05
 V(g1)$label.cex <-0.25
@@ -669,49 +687,66 @@ V(g1)$label.color="black"
 V(g1)$color <- Color_rest
 
 set.seed(1234)
-e <- get.edgelist(g1,names=FALSE)
-l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g1))
 g1<- igraph::simplify(g1)
 # ============================
 
 
 # ========================== PLOT ===================================
-pdf("Network_Extented(Ubiq-Mito).pdf",width=12,height=10)
-set.seed(123)
-locs <- layout.auto(g1)*0.18
+
+pdf("Network_extented.pdf",width=12,height=10)
+set.seed(12345)
+E(g1)$weight = 0.15
+locs <- layout_with_fr(g1,dim=2, niter=1000)
+
+col_added<- unlist(lapply(color_facts,FUN = function(x){ if(x %in% c("DE")){return(1)}else{return(2)}}))
 
 
-col_added<- unlist(lapply(color_facts,FUN = function(x){ if(x %in% c("A","B","C","B-PD")){return(1)}else{return(2)}}))
+
 col_added[col_added==1] <- "Differentially Expressed"
 col_added[col_added==2] <- "Added"
 col_added<-as.factor(col_added)
 V(g1)$color <- col_added
-plot(g1, vertex.size=5, vertex.label.cex=0.3,vertex.label.color="black",vertex.frame.width =0,
-     layout=locs, 
-     main="Original")
+
+
+plot(g1, vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
+     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     layout=locs)
 legend("bottomleft",bty = "n",
-                       legend=levels(col_added),fil=categorical_pal(8)[1:2], horiz=F)
+       legend=levels(col_added),fil=categorical_pal(8)[c(2,1)], horiz=F)
 
 V(g1)$color <- Color_rest
 
-plot(g1,  vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,vertex.size=5,
-     layout=locs, 
-     main="Original")
+plot(g1,  vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
+     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     layout=locs)
 legend("bottomleft",bty = "n",
-                       legend=levels(color_facts),
-                       fill= color_clust, horiz=F)
+       legend=levels(color_facts),
+       fill= color_clust, horiz=F)
+
+
+plot(g1,  vertex.label.color="black",vertex.shape="circle", vertex.size=5, vertex.label.cex=0.9,
+     layout=locs)
+legend("bottomleft",bty = "n",
+       legend=levels(color_facts),
+       fill= color_clust, horiz=F)
+
+plot(g1,  vertex.label.color="black",vertex.shape="circle", vertex.size=5, vertex.label=NA,
+     layout=locs)
+legend("bottomleft",bty = "n",
+       legend=levels(color_facts),
+       fill= color_clust, horiz=F)
 
 
 bet<-betweenness(g1)
 n <- vcount(g1)
-test_bet <- (2 * bet) / (n*n - 3*n + 2) * 100
+test_bet <- scale(bet,center = 0)+4
 
-plot(g1,  vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,vertex.size=test_bet,
-     layout=locs, 
-     main="Original")
+plot(g1, vertex.label.color="black",vertex.label.font=11,
+     vertex.size2=5, vertex.label.cex=0.7,vertex.size=test_bet,
+     layout=locs)
 legend("bottomleft",bty = "n",
-                       legend=levels(color_facts),
-                       fill= color_clust, horiz=F)
+       legend=levels(color_facts),
+       fill= color_clust, horiz=F)
 
 
 # Remove a few vertices
@@ -721,27 +756,53 @@ test2<-add_edges(test1,get.edgelist(g2))
 test3<- igraph::simplify(test2, remove.multiple = TRUE, remove.loops = TRUE)
 
 # Add weight
-E(test3)$weight <- rep(1,length(as_ids(E(test3))))
+E(test3)$weight <- rep(1.0,length(as_ids(E(test3))))
 g4_edge_cor2 <- as_ids(E(test3))[as_ids(E(test3))%in%as_ids(E(g_cor2))]
-E(test3)$weight[match(g4_edge_cor2,as_ids(E(test3)))]<-2
+E(test3)$weight[match(g4_edge_cor2,as_ids(E(test3)))]<-2.5
 g4_edge_cor3 <- as_ids(E(test3))[as_ids(E(test3))%in%as_ids(E(g_cor3))]
-E(test3)$weight[match(g4_edge_cor3,as_ids(E(test3)))]<-4
-E(test3)$width <- E(test3)$weight
-E(test3)$test3 <- c("black","red","yellow")[E(test3)$weight]
+E(test3)$weight[match(g4_edge_cor3,as_ids(E(test3)))]<-5.0
 cor_r <- E(test3)$weight
 cor_r[cor_r==1.0] <- 0.1
 cor_r[cor_r==2.5] <- 0.2
 cor_r[cor_r==5.0] <- 0.3
 
+
+corr_edge_color <- cor_r
+corr_edge_color[corr_edge_color==0.1] <- "gray"
+corr_edge_color[corr_edge_color==0.2] <- "orange"
+corr_edge_color[corr_edge_color==0.3] <- "red"
+
+corr_edge_width <- cor_r
+corr_edge_width[cor_r==0.1] <- 1
+corr_edge_width[cor_r==0.2] <- 2.5
+corr_edge_width[cor_r==0.3] <- 5
+
+
+E(test3)$weight <- 1
+E(test3)$color <- corr_edge_color
+E(test3)$width <- corr_edge_width
+
+
 ## To check the result
-plot(test3, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
+plot(test3, vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
+     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
+
+
 legend("bottomleft",inset = c(0, 0),bty = "n",
        legend=levels(color_facts),
        fill= color_clust,
        horiz=F,title="Nodes")
 
+legend("bottomleft",inset = c(0.15, 0),
+       bty = "n", title="Edges",
+       legend=levels(as.factor(cor_r)),
+       fill=  c("gray","orange","red"),
+       horiz=F)
 
-# =============================== COMMON EDGES =======================================================
+# -------------------------------------------------------------------------
+
+
+
 common1 <-  g1%s%g2
 common2 <-  graph_from_data_frame(as_edgelist(igraph::simplify(common1), names = TRUE),directed = FALSE)
 
@@ -756,8 +817,6 @@ g4_edge_cor2 <- as_ids(E(common5))[as_ids(E(common5))%in%as_ids(E(g_cor2))]
 E(common5)$weight[match(g4_edge_cor2,as_ids(E(common5)))]<-2.5
 g4_edge_cor3 <- as_ids(E(common5))[as_ids(E(common5))%in%as_ids(E(g_cor3))]
 E(common5)$weight[match(g4_edge_cor3,as_ids(E(common5)))]<-5
-E(common5)$width <- E(common5)$weight
-E(common5)$color <- c("black","red","yellow")[E(common5)$weight]
 
 
 cor_r <- E(common5)$weight
@@ -765,55 +824,28 @@ cor_r[cor_r==1.0] <- 0.1
 cor_r[cor_r==2.5] <- 0.2
 cor_r[cor_r==5.0] <- 0.3
 
-plot(common5, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,
-     layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),], 
-     main="Common")
+common_edge_color <- cor_r
+common_edge_color[common_edge_color==0.1] <- "gray"
+common_edge_color[common_edge_color==0.2] <- "orange"
+common_edge_color[common_edge_color==0.3] <- "red"
+
+common_edge_width <- cor_r
+common_edge_width[cor_r==0.1] <- 1
+common_edge_width[cor_r==0.2] <- 2.5
+common_edge_width[cor_r==0.3] <- 5
+
+
+E(common5)$weight <- 1
+E(common5)$color <- common_edge_color
+E(common5)$width <- common_edge_width
+
+plot(common5,vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
+     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),])
 legend("bottomleft",inset = c(0.15, 0),
        bty = "n", title="Edges",
        legend=levels(as.factor(cor_r)),
-       fill=  c("black","red","yellow"),
-       horiz=F)
-
-legend("bottomleft",inset = c(0, 0),bty = "n",
-       legend=levels(color_facts),
-       fill= color_clust,
-       horiz=F,title="Nodes")
-
-
-
-# =================================== PLOT ALL TOGETHR ===============================================
-par(mfrow=c(2,2))
-V(g1)$color <- col_added
-plot(g1, vertex.size=5, vertex.label.cex=0.3,vertex.label.color="black",vertex.frame.width =0,
-     layout=locs, 
-     main="Original")
-legend("bottomleft",bty = "n",
-                       legend=levels(col_added),fil=categorical_pal(8)[1:2], horiz=F)
-color <- Color_rest
-V(g1)$color <- Color_rest
-
-plot(g1, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,
-     layout=locs, 
-     main="Original")
-legend("bottomleft",bty = "n",
-                       legend=levels(color_facts),
-                       fill= color_clust, horiz=F)
-
-
-plot(test3, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
-legend("bottomleft",inset = c(0, 0),bty = "n",
-       legend=levels(color_facts),
-       fill= color_clust,
-       horiz=F,title="Nodes")
-
-
-plot(common5, vertex.size=5, vertex.label.cex=0.3, vertex.label.color="black",vertex.frame.width =0,
-     layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),], 
-     main="Common")
-legend("bottomleft",inset = c(0.2, 0),
-       bty = "n", title="Edges",
-       legend=levels(as.factor(cor_r)),
-       fill=  c("black","red","yellow"),
+       fill=  c("gray","orange","red"),
        horiz=F)
 
 legend("bottomleft",inset = c(0, 0),bty = "n",
@@ -823,6 +855,7 @@ legend("bottomleft",inset = c(0, 0),bty = "n",
 
 
 dev.off()
+
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------

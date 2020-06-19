@@ -444,11 +444,9 @@ dev.off()
 </details>
 
 
-![Network_DE_only](Figures/Network_DE_only.jpg)
+![Network_DE_only](Figures/Figure6.jpg)
 **Figure ?:** **a)** 291 differentialy expressed (DE) genes. connections from STRING and GENEMANIA, output limited to interactions among DE genes. **b)** All 291 genes. **c)** Correlation anlysis. The correlation network of the differentially expressed genes constructed based on the normalized counts. Two genes were linked if the correlation of the gene expressions was greater than 0.1 and the p-values less than 0.05. **d)** Then we overlaid the correlation network with the network construced by Genemania-String. We illustrate the common edges-interactions of these two networks.    
 
-![Network_Extented(Ubiq-Mito)](Figures/Network_Extented(Ubiq-Mito).jpg)
-**Figure ?:** 
 
 
 ##
