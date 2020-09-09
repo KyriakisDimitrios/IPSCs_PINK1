@@ -1,0 +1,118 @@
+
+rule all:
+    input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_All/Conserved_all.txt",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_IPSCsAvg/Conserved_all_alt.txt",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_3Timepoints/Conserved_3.txt",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Pairwise/Volcano.pdf",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/3.Venn_Pairwise/Summary_venn_diagramm.pdf",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/4.Network_Validation/QC4_292.pdf",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/5.Correlation_Net/Network_extented.pdf"
+        
+# ==================================================================== Preprocessing ======================================================================
+
+rule Preprocess:
+    input:
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADA1_S1_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADA2_S2_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADA3_S3_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADA4_S4_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADA5_S1_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADA6_S2_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADA8_S4_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADD5_S2_DGE.txt",
+        "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/DADD6_S3_DGE.txt"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds"
+    shell:
+        "Rscript 1.Preprocessing.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# ==================================================================== Conserved_Markers_All ======================================================================
+rule Conserved_Markers_All:
+    input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_All/Conserved_all.txt"
+    shell:
+        "Rscript 2.1.Conserved_Markers.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# ==================================================================== Conserved_Markers_IPSCsAvg ======================================================================
+rule Conserved_Markers_IPSCsAvg:
+    input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_IPSCsAvg/Conserved_all_alt.txt"
+    shell:
+        "Rscript 2.2.Conserved_Markers_IPSCsAvg.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# ==================================================================== Conserved_Markers_3Timepoints ======================================================================
+rule Conserved_Markers_3Timepoints:
+   input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_3Timepoints/Conserved_3.txt"
+    shell:
+        "Rscript 2.3.Conserved_Markers_3Timepoints.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ==================================================================== DF Pairwise ======================================================================
+rule Pairwise:
+    input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Pairwise/Volcano.pdf",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Pairwise/",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Pairwise/",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Pairwise/"
+    shell:
+        "Rscript 2.4.Pairwise.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# ==================================================================== Venn_diagramm ======================================================================
+rule Venn_diagramm:
+    input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/3.Venn_Pairwise/Summary_venn_diagramm.pdf"
+    shell:
+        "Rscript 3.VennDiagrams.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ==================================================================== Correlation_Net ======================================================================
+rule Correlation_Net:
+    input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_All/Conserved_all.txt",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_IPSCsAvg/Conserved_all_alt.txt",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_3Timepoints/Conserved_3.txt"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/5.Correlation_Net/Network_extented.pdf"
+    shell:
+        "Rscript 5.Correlation_Plots.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# ==================================================================== Network_Validation ======================================================================
+rule Network_Validation:
+    input:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_All/Conserved_all.txt",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_IPSCsAvg/Conserved_all_alt.txt",
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Conserved_Markers_3Timepoints/Conserved_3.txt"
+    output:
+        "/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/4.Network_Validation/QC4_292.pdf"
+    shell:
+        "Rscript 4.Network_Validation.R"
+# ------------------------------------------------------------------------------------------------------------------------------------------------------
+
