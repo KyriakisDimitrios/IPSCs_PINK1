@@ -182,6 +182,7 @@ p3 <- ggplot(dt, aes(x=.id, y=Degree,group=.id,fill=Condition)) +
 #     stat_compare_means(ref.group = 51, label = "p.signif",
 #                        label.y = c(22, 29))      
 
+my_comparisons <- list( c("DEG","RANDOM"))
 
 p4 <- ggboxplot(dt, x = "Condition", y = "Degree",
                 fill = "Condition")+ 
@@ -189,7 +190,7 @@ p4 <- ggboxplot(dt, x = "Condition", y = "Degree",
     stat_compare_means(label.y = 50) + theme_cowplot()  + ylab("Degree") 
 
 
-my_comparisons <- list( c("DEG","RANDOM"))
+
 dt2 <- dt[order(Condition),]
 p4 <- ggboxplot(dt2, x = "Condition", y = "Degree",
                 fill = "Condition")+ 
