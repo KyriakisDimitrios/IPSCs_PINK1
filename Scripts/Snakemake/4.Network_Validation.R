@@ -34,17 +34,27 @@ Combined <- readRDS("/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess
 
 
 
-# === READ DF GROUPS
-g1 <- read.table("Conserved_all.txt")
-g2 <- read.table("Conserved_all_alt.txt")
-g3 <- read.table("Conserved_3.txt")
-
 all_g <- rownames(Combined@assays$RNA@counts)
-write.table(all_g,"All_genes.txt")
 length(all_g)
-all_df_g <- unique(c(rownames(g1),rownames(g2),rownames(g3)))
+all_df_g <- DEGs
 length(all_df_g)
 rest <- all_g[!all_g%in%all_df_g]
+
+
+
+
+# # === READ DF GROUPS
+# g1 <- read.table("Conserved_all.txt")
+# g2 <- read.table("Conserved_all_alt.txt")
+# g3 <- read.table("Conserved_3.txt")
+
+# all_g <- rownames(Combined@assays$RNA@counts)
+# #write.table(all_g,"All_genes.txt")
+# all_g <- read.table("All_genes.txt")[,1]
+# length(all_g)
+# all_df_g <- unique(c(rownames(g1),rownames(g2),rownames(g3)))
+# length(all_df_g)
+# rest <- all_g[!all_g%in%all_df_g]
 
 
 mean_l <- c()
@@ -55,13 +65,16 @@ num_inter <- c()
 string_db = STRINGdb$new(version="10",species=9606)
 
 string_plot_net <- function(i,mean_l,median_l,degree_l){
-    r_list1 <- sample(rest,292)
-    write.table(r_list1,paste0('Random_Genes',i,".txt"),row.names = F,col.names = F)
+    # n_genes <- 292
+    # r_list1 <- sample(rest,n_genes)
+    # write.table(r_list1,paste0('Random_Genes',i,"_",n_genes,".txt"),row.names = F,col.names = F)
+    # Rerun 
+    r_list1<- read.table(paste0('Random_Genes',i,".txt"),col.names = F)[,1]
     Genes <- string_db$mp(r_list1)
     #string_db$plot_network(Genes)
     inter_g <- string_db$get_interactions(Genes)
     full.graph <- string_db$get_subnetwork(Genes)
-    degrees_f <- degree(full.graph)
+    degrees_f <- igraph::degree(full.graph)
     mean_l <-c (mean_l,mean(degrees_f))
     median_l <-c (median_l,median(degrees_f))
     num_nodes <- c(num_nodes,length(degrees_f))
@@ -79,14 +92,18 @@ for(i in 1:50){
     num_inter <- return_res$num_inter
 }
 
+lapply(list(mean_l,median_l,degree_,num_inter),length)
+
 
 pdf("Ours.pdf")
-write.table(all_df_g,paste0('all_df_g',51,".txt"),row.names = F,col.names = F)
+#write.table(all_df_g,paste0('all_df_g',51,".txt"),row.names = F,col.names = F)
+# all_df_g <- read.table(paste0('all_df_g',51,".txt"),col.names = F)[,1]
+
 string_db = STRINGdb$new(version="10",species=9606)
 Genes <- string_db$mp(all_df_g)
 string_db$plot_network(Genes)
 full.graph <- string_db$get_subnetwork(Genes)
-degrees_f <- degree(full.graph)
+degrees_f <- igraph::degree(full.graph)
 mean_l <-c (mean_l,mean(degrees_f))
 median_l <-c (median_l,median(degrees_f))
 num_nodes <- c(num_nodes,length(degrees_f))
@@ -134,9 +151,9 @@ p2 <- df %>%
     ggplot( aes(x=nodes, color=ord)) +
     geom_density(fill="#00BFC4", color="#00BFC4",alpha=0.8)+
     geom_vline(xintercept = deg_num_nodes,color="#F8766D",linetype="dashed", size = 2)+theme_cowplot()+
-    theme(legend.position = "top") + ylab("Probability") + xlab("Number of nodes")         
-#    annotate(geom="text", x=225, y=0.045, label="Random",color="#00BFC4",size=4)+
-#    annotate(geom="text", x=245, y=0.045, label="DEG",color="#F8766D",size=4)+
+    theme(legend.position = "top") + ylab("Probability") + xlab("Number of nodes")+         
+    annotate(geom="text", x=190, y=0.045, label="Random",color="#00BFC4",size=7)+
+    annotate(geom="text", x=240, y=0.045, label="DEG",color="#F8766D",size=7)+xlim(170,260)
 
 
 df <- data.frame("interactions"=rest_num_inter)
@@ -147,12 +164,14 @@ p6 <- df %>%
     geom_density(fill="#00BFC4", color="#00BFC4",alpha=0.8)+
     geom_vline(xintercept = deg_num_inter,color="#F8766D",linetype="dashed",size = 2)+
     theme_cowplot()+
-    theme(legend.position = "top") + ylab("Probability")  + xlab("Number of interactions")    +xlim(c(400,1550)) 
-    #annotate(geom="text", x=840, y=0.003, label="Random",color="#00BFC4",size=4)+
-    #annotate(geom="text", x=1360, y=0.003, label="DEG",color="#F8766D",size=4)+
+    theme(legend.position = "top") + ylab("Probability")  + xlab("Number of interactions")    +xlim(c(400,1650)) +
+    annotate(geom="text", x=300, y=0.003, label="Random",color="#00BFC4",size=7)+
+    annotate(geom="text", x=1300, y=0.003, label="DEG",color="#F8766D",size=7)+xlim(100,1600)
     
 #  #69b3a2
 # #e9ecef
+
+
 
 
 
@@ -167,14 +186,14 @@ dt$ord <- "RANDOM"
 dt$ord[dt$.id==51]<- "DEG"
 colnames(dt)[3] <- "Condition"
 
-pdf("292.pdf")
-plot(mean_l,median_l)
-plot(mean_l,num_nodes)
-plot(median_l,num_nodes)
-dev.off()
+# pdf("292.pdf")
+# plot(mean_l,median_l)
+# plot(mean_l,num_nodes)
+# plot(median_l,num_nodes)
+# dev.off()
 
-p3 <- ggplot(dt, aes(x=.id, y=Degree,group=.id,fill=Condition)) + 
-    geom_boxplot()+theme_cowplot()
+# p3 <- ggplot(dt, aes(x=.id, y=Degree,group=.id,fill=Condition)) + 
+#     geom_boxplot()+theme_cowplot()
 
 
 # ggboxplot(dt, x = ".id", y = "V1",group=".id")+
@@ -184,10 +203,10 @@ p3 <- ggplot(dt, aes(x=.id, y=Degree,group=.id,fill=Condition)) +
 
 my_comparisons <- list( c("DEG","RANDOM"))
 
-p4 <- ggboxplot(dt, x = "Condition", y = "Degree",
-                fill = "Condition")+ 
-    stat_compare_means(comparisons = my_comparisons)+ # Add pairwise comparisons p-value
-    stat_compare_means(label.y = 50) + theme_cowplot()  + ylab("Degree") 
+# p4 <- ggboxplot(dt, x = "Condition", y = "Degree",
+#                 fill = "Condition")+ 
+#     stat_compare_means(comparisons = my_comparisons)+ theme_cowplot()  + ylab("Degree")  # Add pairwise comparisons p-value
+#     # stat_compare_means(label.y = 50) 
 
 
 
@@ -199,37 +218,100 @@ p4 <- ggboxplot(dt2, x = "Condition", y = "Degree",
     theme(legend.position = "none")     + ylab("Degree") +xlab("Condition")     
 
     
-p5 <- ggplot(dt, aes(x=Condition, y=Degree,group=Condition,fill=Condition)) + 
-        geom_boxplot()+ 
-    stat_compare_means(method = "wilcox.test")+      # Add global p-value
-    stat_compare_means(label = "p.signif", method = "t.test",
-                       ref.group = "RANDOM")+theme_cowplot()+
-    theme(legend.position = "top")          
+# p5 <- ggplot(dt, aes(x=Condition, y=Degree,group=Condition,fill=Condition)) + 
+#         geom_boxplot()+ 
+#     stat_compare_means(method = "wilcox.test")+      # Add global p-value
+#     stat_compare_means(label = "p.signif", method = "t.test",
+#                        ref.group = "RANDOM")+theme_cowplot()+
+#     theme(legend.position = "top")          
 
 
 
-p12 <- ggarrange(plotlist=list(p1,p2),nrow = 1)
-p45 <- ggarrange(plotlist=list(p4,p5),nrow = 1)
 
-pdf("QC_292.pdf",height=12,width=8)
-ggarrange(plotlist=list(p12,p3,p45),nrow = 3)
+cor_list<- readRDS("Correlation_Networks.rds")
+
+
+p26<-ggarrange(plotlist=list(p2,p6),nrow = 2)
+g14 <- p1 + annotation_custom(ggplotGrob(p4), xmin = 30, xmax = 80, 
+                       ymin = 0.04, ymax = 0.11)
+
+sup6_p2 <- ggarrange(plotlist=list(p26,g14),nrow = 1)
+
+FigSup_1 <- cor_list[[1]]
+FigSup_2 <- cor_list[[2]]
+FigSup_3 <- cor_list[[3]]
+FigSup_4 <- cor_list[[4]]
+
+
+sup6_p1 <- ggarrange(plotlist=list(FigSup_1,sup6_p2),ncol=2)
+
+sup6_p3  <- ggarrange(plotlist=list(FigSup_2,FigSup_3,FigSup_4),ncol=3)
+
+
+pdf("Network_Sup_Figures.pdf",width=20,height=10)
+FigSup_1 
+FigSup_2 
+FigSup_3 
+FigSup_4 
+sup6_p2
 dev.off()
 
 
-pdf("QC2_292.pdf",height=8,width=15)
-p125 <- ggarrange(plotlist=list(p1,p2,p6,p4),ncol = 4)
-ggarrange(plotlist=list(p125,p3),nrow = 2)
-dev.off()
-
-pdf("QC3_292.pdf",width=15,height=10)
-ggarrange(plotlist=list(p2,p1,p6,p4),nrow = 2,ncol=2)
-dev.off()
 
 
-pdf("QC4_292.pdf",width=8,height=4)
-p2
-p1
-p6
-p4
+
+
+pdf("Sup6")
+ggarrange(plotlist=list(p26,g14),nrow = 1)
 dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+# p12 <- ggarrange(plotlist=list(p1,p2),nrow = 1)
+# p45 <- ggarrange(plotlist=list(p4,p5),nrow = 1)
+
+# pdf("QC_292.pdf",height=12,width=8)
+# ggarrange(plotlist=list(p12,p3,p45),nrow = 3)
+# dev.off()
+
+
+# pdf("QC2_292.pdf",height=8,width=15)
+# p125 <- ggarrange(plotlist=list(p1,p2,p6,p4),ncol = 4)
+# ggarrange(plotlist=list(p125,p3),nrow = 2)
+# dev.off()
+
+# pdf("QC3_292.pdf",width=15,height=10)
+# ggarrange(plotlist=list(p2,p1,p6,p4),nrow = 2,ncol=2)
+# dev.off()
+
+
+# pdf("QC4_292.pdf",width=8,height=4)
+# p2
+# p1
+# p6
+# p4
+# dev.off()
+
+# p6+ annotation_custom(ggplotGrob(p2), xmin = 1, xmax = 3, 
+#                        ymin = -0.3, ymax = 0.6)
+
+
+# pc <- ggarrange(plotlist=list(p6,p4),ncol=1)
+# pb <- ggarrange(plotlist=list(p2,p1),ncol=1)
+
+# ggarrange(plotlist=list(FigSup_1,FigSup_3,FigSup_4),c("d","e","f"),ncol=3)
+
+# ggarrange(plotlist=list(FigSup_2,FigSup_3,FigSup_4),c("d","e","f"),ncol=3)
+
+
 

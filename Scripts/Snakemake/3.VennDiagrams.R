@@ -34,6 +34,7 @@ Combined <- readRDS("/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess
 
 # ===================== OPEN FILES TAKE THE P.Adj- FC Genes
 dirs_pairs <- list.dirs("/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/2.Differential_Epression/Pairwise/",full.names = TRUE )[-1]
+dirs_pairs <- list.dirs("C:/Users/dimitrios.kyriakis/Desktop/PINK1/NEW/2.1/Control_IPSCs_PINK1_IPSCs/Control_D10_PINK1_D06/",full.names = TRUE )[-1]
 
 dirs_pairs <- grep('IPSC|D06.*D06|D15.*D15|D21.*D21',dirs_pairs,value = TRUE)
 
@@ -44,7 +45,9 @@ df_return_nt_all <- list()
 
 for (iter in 1:length(dirs_pairs)){
     dirs_iter <- dirs_pairs[iter]
+    
     file <- paste0(dirs_iter ,"/", dir(dirs_iter, "*.tsv"))
+    print(file)
     l1 <- read.table(file,header=TRUE)
     l1$cluster <- l1$avg_logFC
     l1$cluster[ l1$avg_logFC<0] <- "PINK"
@@ -162,3 +165,48 @@ v[[11]]$label <- paste(intersect(intersect(day06, day15),day21), collapse="\n")
 grid.newpage()
 grid.draw(v)
 dev.off()
+
+
+
+
+
+
+
+
+
+# ======================= Enrichment ==================================
+control_m <-unique(unlist(df_return_nt_cntrl))
+pink_m <-  unique(unlist(df_return_nt_pink))
+
+library(clusterProfiler)
+library(enrichplot)
+library(ReactomePA)
+library(org.Hs.eg.db)
+control_m_e <- bitr(control_m, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+pink_m_e <- bitr(pink_m, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+n_c <- length(control_m_e$ENTREZID)
+n_p <- length(pink_m_e$ENTREZID)
+c_d <- data.frame(ENTREZID = control_m_e$ENTREZID , Condition ="Control")
+p_d <- data.frame(ENTREZID = pink_m_e$ENTREZID , Condition ="PINK1")
+all_d <- rbind(c_d,p_d)
+mydf <- as.data.frame(all_d)
+mydf$ENTREZID <- as.vector(mydf$ENTREZID)
+mydf$ENTREZID <-as.numeric(mydf$ENTREZID )
+GOclusterplot <- compareCluster(ENTREZID~Condition,data=mydf, fun = "enrichGO", OrgDb = "org.Hs.eg.db")
+Keggclusterplot <- compareCluster(ENTREZID~Condition,data=mydf, fun = "enrichKEGG")
+Reactomeclusterplot <- compareCluster(ENTREZID~Condition,data=mydf, fun = "enrichPathway")
+
+
+
+
+pdf("GO_Enrichment_DF_Clusters.pdf",width=22,height=11)
+# dotplot(GOclusterplot)
+# dotplot(Keggclusterplot)
+dotplot(GOclusterplot)+ ggplot2::facet_grid(~Condition, scales = "free")
+dotplot(Keggclusterplot)+ ggplot2::facet_grid(~Condition, scales = "free")
+dotplot(Reactomeclusterplot)+ ggplot2::facet_grid(~Condition, scales = "free")
+dev.off()
+# --------------------
+
+unlist(df_return_nt_cntrl)
+

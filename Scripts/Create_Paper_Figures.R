@@ -56,15 +56,159 @@ ICSWrapper::annotated_heat(object=Controls_DM,
 Stemness_markers<- c("SOX2", "MYC", "POU5F1", "NANOG", "LIN28")
 differentiation_path<- c("OTX2", "LMX1B", "LMX1A", "FOXA2", "PTCH1", "FZD7")
 last <- c(Stemness_markers,differentiation_path)
+Controls_DM <-ScaleData(Controls_DM,last)
 pdf("Figure3b.pdf",width= 8)
-DoHeatmap(Combined,last,group.by = "Timepoints", raster = FALSE)+ scale_fill_viridis(option="inferno")
+DoHeatmap(Controls_DM,last,group.by = "Timepoints", raster = FALSE)+ scale_fill_viridis(option="inferno")
 dev.off()
+
+
+
+
+
+
+
+genes_f <- c(
+"SHH"
+"FGF8"
+"PAX2"
+"WNT1"
+"EN2"
+"MSX1"
+"FERD3L"
+"GLI1"
+"SNCA",
+"RELN",
+"CTNNB1",
+"VIP",
+"DMRTA2",
+"SOX2",
+"HES1",
+"HES5",
+"ADH1B",
+"CALB1",
+"EPHA5",
+"NTN1",
+"EBF1",
+'HES1',
+"NKX2-1",
+"SLIT1",
+"SLIT2",
+"ROBO1",
+"ROBO2",
+"SEMA3A")
+pdf("Figure3b2.pdf",width= 8)
+Controls_DM<-ScaleData(Controls_DM,genes_f)
+DoHeatmap(Controls_DM,genes_f,cells=Controls_DM$Timepoints!="Day10",group.by = "Timepoints", raster = FALSE)+ scale_fill_viridis(option="inferno")
+dev.off()
+
+
+
 # -----------------------------------------------------------
 
+mDA2 <- c(
+"PTCH1"	,
+"FZD7"	,
+"FABP7",
+"CTNNB1",
+"SHH"	,
+"SOX2"	,
+"FOXA2"	,
+"OTX2"	,
+"PBX1"	,
+"HES1"	,
+
+"NTN1",
+"SOX6"	,
+"DCX"	,
+"DDC"	,
 
 
+"TCF12"	,
+"ALCAM",
+
+"SLIT2"	,
+"LMO3",
+
+"LMX1A"	,
+"WNT5A"	,
+"RSPO2"	,
+"MSX1"	,
+"NEUROG2",
+"MSX1"	,
+"DMRTA2",	
+# "ROBO1"	,
+# "ROBO2"	,
+# "NTN1"	,
+# "SLIT1"	,
+# "OTX2"	,
+# "KCNH6" ,	
+"PITX2",
+"ASCL1",
+"PITX3"	,
+"NEUROD1",
+"CORIN",
+"SLIT1",
+"TH",
+"NR4A2"
+# "CORIN",
+# "NEUROD1",
+# "TUBB3",
+# "NR4A2"	
+)
+pdf("Figure3b2.pdf",width= 8)
+DefaultAssay(Controls) <- "RNA"
+Controls<-ScaleData(Controls,mDA2)
+DoHeatmap(Controls,mDA2,group.by = "Timepoints", raster = FALSE)+ scale_fill_viridis(option="inferno")
+dev.off()
 
 
+mDA21 <- c("FABP7"	,
+"SOX2"	,
+"FOXA2"	,
+"LMX1A"	,
+"OTX2"	,
+"WNT5A"	,
+"RSPO2"	,
+"MSX1"	,
+"CORIN"	,
+"ASCL1"	,
+	      "NEUROG2",
+	       "NEUROD1",
+	       "TUBB3",
+"DDC"	,
+"DCX"	,
+"NR4A2"	,
+"PBX1"	,
+"PITX3"	,
+"EN1"	,
+"TH"	,
+'BNC2'	,
+"SLC18A2"	,
+	      "SLC6A3",
+	       "CALB1",
+	       "LMO3",
+	      #"ALDH1A1",
+"SOX6"	,
+"SHH"	,
+"MSX1"	,
+"FERD3L",	
+"CTNNB1",	
+"DMRTA2",	
+"HES1"	,
+"SLIT2"	,
+"ROBO1"	,
+"ROBO2"	,
+"NTN1"	,
+"SLIT1"	,
+"OTX2"	,
+"PTCH1"	,
+"FZD7"	,
+"KCNH6" ,	
+"TCF12"	,
+"ALCAM",
+"PITX2"
+)
+Controls_DM 
 
 # ======================= FIGURE 4 ==========================
 mDA <- c("TCF12", "ALCAM", "PITX2", "DDC", "ASCL1")
@@ -74,7 +218,24 @@ p0 <- DimPlot(Combined,group.by = "condition",cols=color_cond)
 results <- ICSWrapper::scatter_gene(object = Combined,features = c("TH","KCNJ6"),ncol =1 ,nrow =2)+ theme_void()
 plot4 <- DoHeatmap(Combined,mDA,group.by = "Timepoints", raster = FALSE)+  
 scale_fill_viridis(option="inferno")
+DefaultAssay(Combined) <- "SCT"
+Combined <- ScaleData(Combined,mDA2)
+plot4.1 <- DoHeatmap(Combined,mDA2,group.by = "Timepoints", raster = FALSE)+  
+scale_fill_viridis(option="inferno")
+DefaultAssay(Combined) <- "RNA"
+Combined <- ScaleData(Combined,mDA2)
+plot4.1  <- DoHeatmap(Combined,mDA2,group.by = "Timepoints", raster = FALSE)+  
+scale_fill_viridis(option="inferno")
+
+pdf("Figure4c.pdf",width=12,height=10)
+plot4.1 
+dev.off()
+
+
 plot5 <- grid.arrange(p0, results, widths=c(2/3, 1/2), ncol=2, nrow=1)
+
+plot5 <- ggarrange(plotlist=list(p0, results), widths=c(2/3, 1/2), ncol=2, nrow=1)
+
 pdf("Figure4.pdf",width=12,height=10)
 grid.arrange(plot5,plot4,ncol=1, nrow=2,clip=TRUE)
 dev.off()

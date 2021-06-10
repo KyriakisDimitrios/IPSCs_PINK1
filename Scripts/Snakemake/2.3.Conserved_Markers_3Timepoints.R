@@ -46,4 +46,42 @@ sub_markers <- markers[markers$max_pval < 0.01 & index_fc,]
 sub_markers$avg_FC <- rowMeans(sub_markers[,c("Day06_avg_logFC","Day15_avg_logFC","Day21_avg_logFC")])
 sub_markers2 <- sub_markers[abs(sub_markers$avg_FC) >0.1,]
 dim(sub_markers2)
+# 285
 write.table(sub_markers2,"Conserved_3.txt")
+
+
+
+
+
+# ======================= Enrichment ==================================
+control_m <- rownames(sub_markers2[sub_markers2$avg_FC < 0,] )
+pink_m <-  rownames(sub_markers2[sub_markers2$avg_FC > 0,])
+library(clusterProfiler)
+library(enrichplot)
+library(ReactomePA)
+library(org.Hs.eg.db)
+control_m_e <- bitr(control_m, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+pink_m_e <- bitr(pink_m, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+n_c <- length(control_m_e$ENTREZID)
+n_p <- length(pink_m_e$ENTREZID)
+c_d <- data.frame(ENTREZID = control_m_e$ENTREZID , Condition ="Control")
+p_d <- data.frame(ENTREZID = pink_m_e$ENTREZID , Condition ="PINK1")
+all_d <- rbind(c_d,p_d)
+mydf <- as.data.frame(all_d)
+mydf$ENTREZID <- as.vector(mydf$ENTREZID)
+mydf$ENTREZID <-as.numeric(mydf$ENTREZID )
+GOclusterplot <- compareCluster(ENTREZID~Condition,data=mydf, fun = "enrichGO", OrgDb = "org.Hs.eg.db")
+Keggclusterplot <- compareCluster(ENTREZID~Condition,data=mydf, fun = "enrichKEGG")
+Reactomeclusterplot <- compareCluster(ENTREZID~Condition,data=mydf, fun = "enrichPathway")
+
+
+
+
+pdf("GO_Enrichment_DF_Clusters.pdf",width=22,height=11)
+# dotplot(GOclusterplot)
+# dotplot(Keggclusterplot)
+dotplot(GOclusterplot)+ ggplot2::facet_grid(~Condition, scales = "free")
+dotplot(Keggclusterplot)+ ggplot2::facet_grid(~Condition, scales = "free")
+dotplot(Reactomeclusterplot)+ ggplot2::facet_grid(~Condition, scales = "free")
+dev.off()
+# ----------------------

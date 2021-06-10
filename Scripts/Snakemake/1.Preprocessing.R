@@ -16,13 +16,16 @@ library(NMF)
 library(ggplot2)
 library(ggpubr)
 library(cowplot)
-
+library(viridis)
 set.seed(123)
 tool="seurat"
 project ="IPSCs_pink1"
 dataset <- project
 
-DATADIR<- "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/"
+# DATADIR<- "home/users/dkyriakis/PhD/Projects/Michi_Data/DATA/"
+DATADIR<-"C:/Users/dimitrios.kyriakis/Desktop/PhD/Projects/Michi_Data/DATA/"
+
+DATADIR<-"/home/DATA/"
 list_of_files <-c(
     paste0(DATADIR,"DADA1_S1_DGE.txt"),
     paste0(DATADIR,"DADA2_S2_DGE.txt"),
@@ -52,6 +55,14 @@ dir.create("/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess")
 setwd("/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess")
 
 
+setwd("C:/Users/dimitrios.kyriakis/Desktop/PINK1/NEW")
+
+source("C:/Users/dimitrios.kyriakis/Desktop/PhD/Scripts/ipscs_pink1/Scripts/Functions.R")
+source("C:/Users/dimitrios.kyriakis/Desktop/PhD/Scripts/ipscs_pink1/Scripts/Minors.R")
+source("C:/Users/dimitrios.kyriakis/Desktop/PhD/Scripts/ipscs_pink1/Scripts/Networks.R")
+
+
+
 colormap_d<- c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928',"black","gray")
 color_cond  <- c(brewer.pal(8,"Dark2"),"black","gray","magenta4","seagreen4")[c(5,1,2,3,4,9,6,7,8)]
 color_cond  <- c(brewer.pal(5,"Dark2"),"black","gray","magenta4","seagreen4",brewer.pal(9,"Set1")[-6])[c(5,1,2,3,4,9,6,7,8)]
@@ -74,7 +85,7 @@ SCT=TRUE
 criteria_pass=3
 min.cells <- 10
 min.features <- 200
-
+data_10x <- FALSE
 
 ## ----read------------------------------------------------------------------------------------
 # options(future.globals.maxSize= 2122317824)
@@ -131,18 +142,22 @@ DefaultAssay(object = Seurat.combined) <- "integrated"
 #Seurat.combined$condition <- Idents(object = Seurat.combined)
 
 Combined <- Seurat.combined
+Combined$condition <- factor(as.factor(Combined$condition), levels = c("Control_IPSCs", "Control_D06"  ,"Control_D10",   "Control_D15",   "Control_D21",
+                                                                       "PINK1_IPSCs","PINK1_D06",     "PINK1_D15",     "PINK1_D21"))
 
 setwd("../")
 
-
+saveRDS(Combined,"test.rds")
+Combined <- readRDS("test.rds")
 ## ----Clustering------------------------------------------------------------------------------
 # ================================== Clustering =========================================
 dir.create("Clusters")
 setwd("Clusters")
 
-
+set.seed(123)
+library(RcppAnnoy)
 # Combined <- ReduceDim(Combined,method="umap",project=project)$Combined
-# debugonce(reduce_dim)
+# debugonce(ICSWrapper::reduce_dim)
 Combined <- ICSWrapper::reduce_dim(Combined,project=project,assay = "SCT")$Combined#,resolution=c(0.1))$Combined
 
 
@@ -158,12 +173,29 @@ ICSWrapper::plot_tot_mRNA(Combined,title="",save=TRUE,tiff=FALSE,reduce="t-SNE",
 if(tolower(tool)=="seurat" & elbow){
     p3 <- DimPlot(object = Combined, reduction = "umap", group.by = "condition",cols = color_cond)
     p4 <- DimPlot(object = Combined, reduction = "umap", label = TRUE,cols = color_clust)
-    pdf(paste(Sys.Date(),project,"umap","Seurat.pdf",sep="_"))
+    pdf(paste(Sys.Date(),project,"umap","Seuratw.pdf",sep="_"))
     print(p3)
     print(p4)
     dev.off()
 }
 setwd("../")
+
+dim(Combined@assays$RNA@data)
+
+S1<-Combined@assays$RNA@counts
+S2<-Combined@assays$RNA@data
+Combined@meta.data
+SS <- NormalizeData(Combined)
+S3<-SS@assays$RNA@data[1:10,1:10]
+
+meta <- Combined@meta.data[,c(1,2,3,4,5,6,9,10,11,12,13)]
+
+write.csv(meta, file=gzfile("Metadata.csv.gz"))
+write.csv(S1, file=gzfile("Raw_data.csv.gz"))
+write.csv(S2, file=gzfile("Normalized_data.csv.gz"))
+
+S3
+
 saveRDS(Combined,paste0("Clustered_",NewDir,".rds"))
 
 pdf(paste(Sys.Date(),project,"_projection_Aligned_Treatment.pdf",sep="_"))
@@ -193,6 +225,7 @@ dir.create("Developmental_Markers")
 setwd("Developmental_Markers")
 DefaultAssay(Combined) <- "RNA"
 file <- paste0(WORKDIR,"/Gene_Lists/Paper_IPCS_genes.txt")
+file <- "C:/Users/dimitrios.kyriakis/Desktop/PhD/Scripts/ipscs_pink1/Paper_IPCS_genes.txt"
 
 genes_state <-read.table(file)
 
@@ -201,7 +234,7 @@ for(category in levels(as.factor(genes_state$V1))){
   category_genes_l <- category_genes[category_genes%in%rownames(Combined)]
   Combined <- AddModuleScore(Combined,features = list(category_genes_l),name = category)
 
-  pdf(paste0(category,"_umap_projection_condition_regPhase.pdf"),width = 8,height = 8)
+  pdf(paste0(category,"_2umap_projection_condition_regPhase.pdf"),width = 8,height = 8)
   res <- ICSWrapper::scatter_gene(Combined,features = category_genes_l,ncol = 2,nrow = 2,size=1.1)
   plot(res)
   dev.off()
@@ -233,7 +266,7 @@ for(category in levels(as.factor(genes_state$V1))){
 
 features <- c("iPSC_identity1","Mda_identity_stage11", "Mda_identity_stage21","Mda_identity_stage31","Mda_identity_stage41", "Non.Mda1")    
 
-pdf("Development_umap_projection_condition_regPhase.pdf",width = 12,height = 8)
+pdf("2Development_umap_projection_condition_regPhase.pdf",width = 12,height = 8)
 res <- ICSWrapper::scatter_gene(Combined,features = features,ncol = 3,nrow = 2,size=1.1)
 print(ggarrange(plotlist=res,ncol = 3,nrow = 2))
 dev.off()
@@ -305,7 +338,7 @@ Combined <- ScaleData(Combined,rownames(Combined))
 category_genes <- toupper(as.vector(genes_state[,2]))
 category_genes_l <- category_genes[category_genes%in%rownames(Combined)]
 ICSWrapper::annotated_heat(Combined,row_annotation = c(1),gene_list = category_genes_l,ordering = "condition",title="Development_Markers")
-ics_scanpy(Combined,features = category_genes_l,group.by = "condition",Rowv = NA,scale="c1")
+ICSWrapper::ics_scanpy(Combined,features = category_genes_l,group.by = "condition")#,Rowv = NA,scale="c1")
 setwd("../")
 # --------------------------------------------------------------------------------------------------
 

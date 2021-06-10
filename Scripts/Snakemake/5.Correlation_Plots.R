@@ -35,6 +35,7 @@ setwd("/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/5.Correlation_Net/")
 
 Combined <- readRDS("/home/users/dkyriakis/PhD/Projects/IPSCs_pink1/1.Preprocess/IPSCs_Combined.rds")
 
+#load("C:/Users/dimitrios.kyriakis/Desktop/PhD/Projects/Michi_Data/2020-04-17_seurat_elbow_TRUE_Mito-FALSE_Ribo-FALSE_SCT-TRUE_criteria_pass-3/IPSCs_PINK.RData")
 
 
 # ========================================= FUNCTIONS ====================================================
@@ -444,9 +445,9 @@ g1<- igraph::simplify(g1)
 
 
 # ========================== PLOT ===================================
-pdf("Network_DE_only.pdf",width=12,height=10)
+# pdf("Network_DE_only.pdf",width=15,height=15)
 set.seed(123)
-locs <- layout_on_sphere(g1)*0.4
+locs <- layout_on_sphere(g1)*0.7
 
 e <- get.edgelist(g1,names=FALSE)
 locs <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g1),
@@ -459,11 +460,13 @@ col_added<- unlist(lapply(color_facts,FUN = function(x){ if(x %in% c("A","B","C"
 V(g1)$color <- Color_rest
 
 plot(g1,  vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
-     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     vertex.size=unlist(lapply(V(g1)$name,nchar))*2.8,vertex.size2=5, vertex.label.cex=0.98,
      layout=locs)
 legend("bottomleft",bty = "n",
        legend=levels(color_facts),
-       fill= color_clust, horiz=F)
+       fill= color_clust, horiz=F,cex=1.5)
+FigSup_1<- recordPlot()
+plot.new() ## clean up device
 
 
 bet<-betweenness(g1)
@@ -473,12 +476,12 @@ test_bet <- (2 * bet) / (n*n - 3*n + 2) * 500
 test_bet<-scale(bet,center = 0)+4
 
 plot(g1, vertex.label.color="black",vertex.label.font=11,
-     vertex.size2=5, vertex.label.cex=0.7,vertex.size=test_bet,
+     vertex.size2=unlist(lapply(V(g1)$name,nchar))*2.5, vertex.label.cex=1,vertex.size=test_bet,
      layout=locs, 
      main="Original")
 legend("bottomleft",bty = "n",
        legend=levels(color_facts),
-       fill= color_clust, horiz=F)
+       fill= color_clust, horiz=F,cex=1.5)
 
 
 # Remove a few vertices
@@ -516,20 +519,23 @@ E(test3)$width <- corr_edge_width
 
 
 ## To check the result
-plot(test3, vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
-     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
+# pdf("test.net.pdf",width=15,height=15)
+plot(test3, vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=25,
+     vertex.size=unlist(lapply(V(test3)$name,nchar))*3.2,vertex.size2=6, vertex.label.cex=1, layout=locs[as_ids(V(g1)) %in% as_ids(V(test3)),])
 
 
 legend("bottomleft",inset = c(0, 0),bty = "n",
        legend=levels(color_facts),
        fill= color_clust,
-       horiz=F,title="Nodes")
+       horiz=F,title="Nodes",cex=1.5)
 
 legend("bottomleft",inset = c(0.15, 0),
        bty = "n", title="Edges",
        legend=levels(as.factor(cor_r)),
        fill=  c("gray","orange","red"),
-       horiz=F)
+       horiz=T,cex=1.5)
+FigSup_2<- recordPlot()
+plot.new() ## clean up device
 
 # ----------------------------------------------------------------------------------------------------
 
@@ -571,22 +577,24 @@ E(common5)$weight <- 1
 E(common5)$color <- common_edge_color
 E(common5)$width <- common_edge_width
 
-plot(common5,vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
-     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+plot(common5,vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=25,
+     vertex.size=unlist(lapply(V(common5)$name,nchar))*2.5,vertex.size2=6, vertex.label.cex=1,
      layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),])
 legend("bottomleft",inset = c(0.15, 0),
        bty = "n", title="Edges",
        legend=levels(as.factor(cor_r)),
        fill=  c("gray","orange","red"),
-       horiz=F)
+       horiz=F,cex=1.5)
 
 legend("bottomleft",inset = c(0, 0),bty = "n",
        legend=levels(color_facts),
        fill= color_clust,
-       horiz=F,title="Nodes")
+       horiz=F,title="Nodes",cex=1.5)
+FigSup_3<- recordPlot()
+plot.new() ## clean up device
 
 
-dev.off()
+# dev.off()
 
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
@@ -601,7 +609,7 @@ dev.off()
 library("qgraph")
 library("igraph")
 library("Seurat")
-setwd("C:\\Users\\dimitrios.kyriakis\\Desktop\\PhD\\Projects\\Michi_Data\\2020-04-17_seurat_elbow_TRUE_Mito-FALSE_Ribo-FALSE_SCT-TRUE_criteria_pass-3\\Gabriela_Networks\\Final_Network/")
+# setwd("C:\\Users\\dimitrios.kyriakis\\Desktop\\PhD\\Projects\\Michi_Data\\2020-04-17_seurat_elbow_TRUE_Mito-FALSE_Ribo-FALSE_SCT-TRUE_criteria_pass-3\\Gabriela_Networks\\Final_Network/")
 
 DefaultAssay(Combined) <- "RNA"
 Combined<- NormalizeData(Combined)
@@ -744,19 +752,23 @@ V(g1)$color <- col_added
 
 
 plot(g1, vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
-     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     vertex.size=unlist(lapply(V(g1)$name,nchar))*2.5,vertex.size2=5, vertex.label.cex=0.7,
      layout=locs)
 legend("bottomleft",bty = "n",
-       legend=levels(col_added),fil=categorical_pal(8)[c(2,1)], horiz=F)
+       legend=levels(col_added),fil=categorical_pal(8)[c(2,1)], horiz=F,cex=1.5)
+
 
 V(g1)$color <- Color_rest
-
+ela <- V(g1)$name
 plot(g1,  vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
-     vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
+     vertex.size=unlist(lapply(ela,nchar))*2.5,vertex.size2=4, vertex.label.cex=0.8,
      layout=locs)
 legend("bottomleft",bty = "n",
        legend=levels(color_facts),
-       fill= color_clust, horiz=F)
+       fill= color_clust, horiz=F,cex=1.5)
+
+FigSup_4<- recordPlot()
+plot.new() ## clean up device
 
 
 plot(g1,  vertex.label.color="black",vertex.shape="circle", vertex.size=5, vertex.label.cex=0.9,
@@ -782,6 +794,7 @@ plot(g1, vertex.label.color="black",vertex.label.font=11,
 legend("bottomleft",bty = "n",
        legend=levels(color_facts),
        fill= color_clust, horiz=F)
+
 
 
 # Remove a few vertices
@@ -874,6 +887,9 @@ E(common5)$weight <- 1
 E(common5)$color <- common_edge_color
 E(common5)$width <- common_edge_width
 
+
+
+
 plot(common5,vertex.label.color="black",vertex.shape="rectangle",vertex.label.font=11,
      vertex.size=11,vertex.size2=5, vertex.label.cex=0.7,
      layout=locs[as_ids(V(g1)) %in% as_ids(V(common5)),])
@@ -882,7 +898,6 @@ legend("bottomleft",inset = c(0.15, 0),
        legend=levels(as.factor(cor_r)),
        fill=  c("gray","orange","red"),
        horiz=F)
-
 legend("bottomleft",inset = c(0, 0),bty = "n",
        legend=levels(color_facts),
        fill= color_clust,
@@ -891,6 +906,30 @@ legend("bottomleft",inset = c(0, 0),bty = "n",
 
 dev.off()
 
+
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
+library(gridExtra)
+library(grid)
+pdf("test.pdf",width=75,height=15)
+FigSup_1
+ggarrange(plotlist=list(FigSup_2,FigSup_3,FigSup_4),ncol=3)
+dev.off()
+
+pdf("Network_Sup_Figures.pdf",width=20,height=10)
+FigSup_1
+FigSup_2
+FigSup_3
+FigSup_4
+sup6_p2
+dev.off()
+
+
+
+saveRDS(list(FigSup_1,
+FigSup_2,
+FigSup_3,
+FigSup_4),"Correlation_Networks.rds")
+
+
