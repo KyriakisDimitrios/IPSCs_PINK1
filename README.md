@@ -13,11 +13,11 @@ https://3.basecamp.com/3652073/buckets/15964731/vaults/2493637291
 Parkinson’s disease (PD) is the second most prevalent neurodegenerative disorder, yet there is no treatment that can prevent or slow its progression. The mechanisms leading to PD pathology are not well understood, but we can gain insight by studying mutations known to cause PD. We used iPSCs carrying a homozygous mutation (ILE368ASN) within the PINK1 (PARK6) gene to generate midbrain dopaminergic (mDA) neurons, the primary targets of PD. Pairwise comparison between three independent pairs of a PINK1 and a control cell line, using single cell RNA sequencing, identified 151 genes consistently dysregulated at three different timepoints of dopaminergic differentiation. Upon examination, many of these genes formed a network which not only includes genes directly interacting with PINK1-related pathways like Parkin, but also genes that link to several additional PD-related pathways, including LRRK2, DJ-1 and α-synuclein. This suggests that pathology resulting from other PD mutations converges on a common PD network.
 
 <!-- ![Figure1](Figures/Figure1.jpg) -->
-<img src="Figures/Fig1.tif" width=50%>
+<img src="Figures/Fig1.jpg" width=50%>
 
 **Figure 1:** Experimental design.
 
-![Figure2](Figures/Fig2.tif)
+![Figure2](Figures/Fig2.jpg)
 **Figure 2:** Generation and classification of iPS cell lines.
 **a)**. Immunocytochemistry. Staining for the iPSC markers Oct3/4 and TRA-180. DAPI was used to stain cell nuclei as a reference. 
 **b)**. Results of Scorecard analysis of iPSCs and embryonic bodies (EBs). 
@@ -25,16 +25,16 @@ iPSCs are expected to show high expression of self-renewal genes (Self-renew +) 
 EBs are cells at an early stage of spontaneous differentiation. Scorecard analysis of EBs determines the iPSC cell line’s potential to differentiate into the three germ layers: ectoderm, mesoderm, and endoderm. EBs are expected to express few or no self-renewal genes (Self-renew -) and to show expression of some mesoderm, ectoderm and endoderm markers: Ecto +/-, Meso +/-, Endo +/-.
 
 
-![Figure3](Figures/Fig3.tif)
+![Figure3](Figures/Fig3.jpg)
 **Figure 3:** iPSC status, differentiation and classification of mDA neurons.
 **a)**. Heatmap of the top 15 differential expressed genes per time-point (adjusted p-value<0.01 and fold change >0.1) across the different time points of the control data that examined (IPSCs,Day06, Day15 and Day21).  **b)**. Expression of stemness markers: SOX2, MYC (c-Myc), POU5F1 (Oct4), and NANOG, and mDA-specific differentiation pathways in differentiating neurons (SC and qPCR): Otx2, EN1, Lmx1b, Lmx1a, and Foxa2. SOX2 directs the differentiation of iPSCs into neural progenitors and for maintains the properties of neural progenitor stem cells.
 
 
-![Figure4](Figures/Fig4.tif)
+![Figure4](Figures/Fig4.jpg)
 **Figure 4:** iPSC status, differentiation and classification of mDA neurons. **a)**. Expression of mDA-specific differentiation pathways in differentiating neurons (SC and qPCR): Otx2, EN1, Lmx1b, Lmx1a, and Foxa2 (also see Table 2). **b)**. Staining for DA marker TH, neuronal marker MAP2.
 
 
-![Figure5](Figures/Fig5.tif)
+![Figure5](Figures/Fig5.jpg)
 **Figure 5:** **a)** Heatmap of the common differential expressed genes (adjusted p-value<0.01 and fold change >0.1) across the different time points that examined (Day06, Day15 and Day21). Each column is a single cell, and each row is a single gene. The bar on the top shows the experimental origin of cells. **b)** Venn diagrams of the differential expressed genes across time points. **c)** Volcano plot for the pairwise differential expression analysis. For illustration purposes we used 0.6 fold change as threshold to annotate the genes with greater fold change and significant adjusted p-value (adjusted p-value<0.01).
 
 
