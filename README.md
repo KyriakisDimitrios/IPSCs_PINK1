@@ -13,29 +13,82 @@ https://3.basecamp.com/3652073/buckets/15964731/vaults/2493637291
 Parkinson’s disease (PD) is the second most prevalent neurodegenerative disorder, yet there is no treatment that can prevent or slow its progression. The mechanisms leading to PD pathology are not well understood, but we can gain insight by studying mutations known to cause PD. We used iPSCs carrying a homozygous mutation (ILE368ASN) within the PINK1 (PARK6) gene to generate midbrain dopaminergic (mDA) neurons, the primary targets of PD. Pairwise comparison between three independent pairs of a PINK1 and a control cell line, using single cell RNA sequencing, identified 151 genes consistently dysregulated at three different timepoints of dopaminergic differentiation. Upon examination, many of these genes formed a network which not only includes genes directly interacting with PINK1-related pathways like Parkin, but also genes that link to several additional PD-related pathways, including LRRK2, DJ-1 and α-synuclein. This suggests that pathology resulting from other PD mutations converges on a common PD network.
 
 <!-- ![Figure1](Figures/Figure1.jpg) -->
-<img src="Figures/Figure1.jpg" width=50%>
+<!-- <img src="Figures/Figure1.jpg" width=50%> -->
+![Figure1](Figures/Figure1.jpg)
+**Figure 1:
+Experimental design. a.**  Fibroblasts were used to generate human induced
+pluripotent stem cells (iPSCs), which were then used to generate mDA neurons.
+Differentiation was initiated concurrently in a PINK1 and a control cell line, at three different
+times to obtain cells at different stages of differentiation that could all be collected for SCRNAseq at the same time, thus avoiding batch effects. “P+1” indicates that the iPSCs were
+passaged before new differentiation was initiated. Since D10 was not used in pairwise
+analysis, we indicated “P+2” between D15 and D6 differentiation initiation. B. Heatmap
+illustrating the transitions in gene expression from iPSC markers (MYC, POU5F1-OCT3/4), to
+genes associated with mDA differentiation (PTCH1, FZDZ, HES1, OTX2, SLIT1, LMX1A), and
+finally to early expression of mature mDA markers (DCX, DDC). This is discussed in more
+detail in the text and in Fig. 3 & 4. The gene expression matrix used here consists of 4495
+cells (see Methods section). 
 
-**Figure 1:** Experimental design.
 
 ![Figure2](Figures/Figure2.jpg)
-**Figure 2:** Generation and classification of iPS cell lines.
-**a)**. Immunocytochemistry. Staining for the iPSC markers Oct3/4 and TRA-180. DAPI was used to stain cell nuclei as a reference. 
-**b)**. Results of Scorecard analysis of iPSCs and embryonic bodies (EBs). 
-iPSCs are expected to show high expression of self-renewal genes (Self-renew +) and low mesoderm, ectoderm and endoderm marker expression (Ecto -, Meso -, Endo -).
-EBs are cells at an early stage of spontaneous differentiation. Scorecard analysis of EBs determines the iPSC cell line’s potential to differentiate into the three germ layers: ectoderm, mesoderm, and endoderm. EBs are expected to express few or no self-renewal genes (Self-renew -) and to show expression of some mesoderm, ectoderm and endoderm markers: Ecto +/-, Meso +/-, Endo +/-.
+
+**Figure 2: Classification of iPSC status. a.** Immunocytochemistry (ICC). Staining for the iPSC markers OCT3/4 and TRA-1-80 of iPSC colonies, prior to differentiation. DAPI was used to
+stain cell nuclei as a reference. **b.** Expression of genes known to indicate iPSC status (MYC, POU5F1-OCT3/4) and of genes identified by a differential expression analysis between iPSCs and differentiating cells (also see Supplement Fig. 12). TDGF-1 is expressed in iPS cells of high stemness60; L1TD1, USP44, POLR3G, and TERF1 are essential for the maintenance of pluripotency in human stem cells 61–64; IFITM1, DPPA4, and PRDX1 are associated with
+stemness 65–67. c. Results of Scorecard analysis of iPSCs and embryonic bodies (EBs). iPSCs
+are expected to show high expression of self-renewal genes and low expression of
+mesoderm, ectoderm and endoderm markers. EBs are cells at an early stage of spontaneous
+differentiation. Scorecard analysis of EBs determines the iPSC line’s potential to
+differentiate into the three germ layers, hence, EBs are expected to express few or no selfrenewal genes and to show expression of some mesoderm, ectoderm and endoderm
+markers: Ecto +/-, Meso +/-, Endo +/-.
+
 
 
 ![Figure3](Figures/Figure3.jpg)
-**Figure 3:** iPSC status, differentiation and classification of mDA neurons.
-**a)**. Heatmap of the top 15 differential expressed genes per time-point (adjusted p-value<0.01 and fold change >0.1) across the different time points of the control data that examined (IPSCs,Day06, Day15 and Day21).  **b)**. Expression of stemness markers: SOX2, MYC (c-Myc), POU5F1 (Oct4), and NANOG, and mDA-specific differentiation pathways in differentiating neurons (SC and qPCR): Otx2, EN1, Lmx1b, Lmx1a, and Foxa2. SOX2 directs the differentiation of iPSCs into neural progenitors and for maintains the properties of neural progenitor stem cells.
+**Figure 3.  In vitro differentiation of iPSC-derived mDA neurons recapitulates the in vivo
+process. a.** To illustrate the maturation of neuronal morphology and mDA status,
+differentiated neurons were stained at D25 and D35 for a neuronal marker MAP2 (red) and
+mDA markers (green): TH, PITX3, LMX1A and DAT. **b.** Quantitation of mDA markers TH,
+ALDH1A1 and LMX1A. using absolute quantitation via qPCR and standardization to a
+housekeeping gene. Each timepoint represents three biological replicates, amplified in
+duplicate. Standard error (SE) bars are the SE of biological replicates. The expression levels are standardized to total RNA and to the expression of the housekeeping gene GAPDH.
+c. Heatmap showing the expression of genes known from literature to be involved and
+necessary for mDA neuron differentiation (Supplement Table 3a,b). **d.** The mDA
+differentiation gene expression profile recently published by Ásgrímsdóttir and Arenas
+(2020)68 was used to show the progression during differentiation, from iPSCs, to radial glia
+(Rgl), to progenitors (Prog) and neuroprogenitors (NProg), to early mDA neurons (DA) For
+genes used to determine expression modules see Supplement Table 3b). 
 
 
 ![Figure4](Figures/Figure4.jpg)
-**Figure 4:** iPSC status, differentiation and classification of mDA neurons. **a)**. Expression of mDA-specific differentiation pathways in differentiating neurons (SC and qPCR): Otx2, EN1, Lmx1b, Lmx1a, and Foxa2 (also see Table 2). **b)**. Staining for DA marker TH, neuronal marker MAP2.
+**Figure 4: Classification of mDA status. a.** TH positive neurons co-express mDA markers
+PITX3, LMX1A and DAT in control (top) and PINK1 cell line (bottom), at D35. **b.** Table on the left shows that, based on our SC-RNAseq data, cell lines cluster according to differentiation stage, indicating that gene expression is very homogenous in the control and the PINK1 cell lines, which allows for the detection of even subtle alteration by the presence of the PINK1 mutation. Tables on the right show trajectory of expression of TH and KCNJ6 (GIRK2), two mDA markers. At D21 neurons begin to show TH expression, together with expression of mDA markers, this indicates that they are becoming early postmitotic mDA neurons. Similar observations can also be made from an expression heatmap shown in Supplement Figure
+12. 
 
 
 ![Figure5](Figures/Figure5.jpg)
-**Figure 5:** **a)** Heatmap of the common differential expressed genes (adjusted p-value<0.01 and fold change >0.1) across the different time points that examined (Day06, Day15 and Day21). Each column is a single cell, and each row is a single gene. The bar on the top shows the experimental origin of cells. **b)** Venn diagrams of the differential expressed genes across time points. **c)** Volcano plot for the pairwise differential expression analysis. For illustration purposes we used 0.6 fold change as threshold to annotate the genes with greater fold change and significant adjusted p-value (adjusted p-value<0.01).
+**Figure 5: Differentialy expressed genes (DEGs)**  in a cell line homozygous for a mutation in the PINK1 gene, compared to a control cell line, at three timepoints during the
+differentiation of mDA neurons (D6, D15 and D21). **a.** Heatmap of the top DEGs. Each
+column corresponds to a timepoint for either control (left 3) or PINK1 cells (right 3); each
+row shows the expression of one gene in individual cells. **b.** Top DEGs. The minimum fold
+change was increased to highlight the top differentially expressed genes. We identified top
+56 genes as our group A (Table 2), here we show the top five upregulated genes (left Venn
+diagram) and the top three downregulated genes (right Venn diagram). **c.** Enrichment
+analysis performed using the STRING69 database. The top KEGG pathway associated with
+this dataset is Parkinson’s disease. Other three KEGG pathways identified were Spliceosome,
+Huntington's disease and Thermogenesis, in order of decreasing significance. Details are
+listed in Supplement Table 12.
+
+
+
+![Figure6](Figures/Figure6.jpg)
+**Figure 6. Network analysis. a.** Protein-protein interaction network based on known interactions available through the STRING69 and GeneMANIA70 databases. Only strong interactions were retained, predicted interactions or text associations were omitted (see Methods). Betweenness centrality was used to illustrate the relative importance of each node within the network through the level of its connectedness to other proteins. In the larger the circle, the more partners the node is connected to. The colours represent the DEG sets, with the top 56 DEGs (group A) in light blue, group B in purple, group C in dark green and group D in light green. CHCHD2 (pink, part of group B) is a DEG which has recently also been identified as a PARK gene. **b.** DEGs which play a role in ubiquitination Additional functional pathways are listed in Supplement Fig. 7 and Supplement Table 9. Specific connection to ubiquitination are shown in Supplement Fig.8. **c.** Based on literature, 68% of the DEGs of this network are already known to be associated with PD (for references see Supplement Table 10). Supplement Fig.9 shows which genes/proteins of the network directly interact with PARK genes through known protein-protein interactions. The topology of all three networks is the same, the different appearance is a result of a separate analysis run, but the connections and size of the nodes remain the same.
+
+
+![Figure7](Figures/Figure7.jpg)
+**Figure 7. Comparative proteomics analysis between CTRL and Pink1 cell line at D25 and
+D40 validates the manifestation of the transcriptional phenotype.** Results of proteomic
+analysis at D25 and D40 of the differentiation protocol. **a.** Protein levels of protein that were detected as both top differentially abundant at the protein level by the proteomics analysis, and by SC-RNAseq, as differentially expressed at the mRNA level. The data shows results at two timepoints, D25 and D40, in two biological replicates per timepoint. **b.** This figure shows a network of proteins differentially expressed between a control and a PINK1 mutationcarrying cell line, at D25 and D40. Proteins which are differentially expressed at both D25 and D40 are highlighted in green and point to a dysfunction of the dopaminergic system. D25 differentially abundant proteins are in purple, D40 in blue, proteins also identified as by SC-RNAseq differentially expressed at the mRNA level are in pink. For a table of proteins see
+Supplement Table 13.
+
 
 
 # scRNAseq Analysis
