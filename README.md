@@ -1,16 +1,12 @@
 # PINK1 shows LRRK2, Parkin, and SNCA as part of the Parkinson’s network.
 
 # Authors
-Gabriela Novak, Dimitrios Kyriakis, Kamil Grzyb, Michela Bernini, Alexander Skupin
 
-# Google Docs
-https://drive.google.com/drive/folders/1xoEtZF-J95cBWNCMLy2bk0pyJo4HLyX_?usp=sharing
-# Basecamp
-https://3.basecamp.com/3652073/buckets/15964731/vaults/2493637291
+Gabriela Novak, Dimitrios Kyriakis, Kamil Grzyb, Michela Bernini, Sophie Rodius, Gunnar Dittmar, Steven Finkbeiner, and Alexander Skupin
 
 # Abstract
 
-Parkinson’s disease (PD) is the second most prevalent neurodegenerative disorder, yet there is no treatment that can prevent or slow its progression. The mechanisms leading to PD pathology are not well understood, but we can gain insight by studying mutations known to cause PD. We used iPSCs carrying a homozygous mutation (ILE368ASN) within the PINK1 (PARK6) gene to generate midbrain dopaminergic (mDA) neurons, the primary targets of PD. Pairwise comparison between three independent pairs of a PINK1 and a control cell line, using single cell RNA sequencing, identified 151 genes consistently dysregulated at three different timepoints of dopaminergic differentiation. Upon examination, many of these genes formed a network which not only includes genes directly interacting with PINK1-related pathways like Parkin, but also genes that link to several additional PD-related pathways, including LRRK2, DJ-1 and α-synuclein. This suggests that pathology resulting from other PD mutations converges on a common PD network.
+Parkinson’s disease (PD) is the second most prevalent neurodegenerative disorder, characterized by the loss of dopaminergic neurons (mDA) in the midbrain. The complex underlying mechanisms are only partly understood and there is no treatment able to reverse PD progression. Here, we aim to understand the disease mechanism using mDA neurons obtained through differentiation of human induced pluripotent stem cells (hiPSCs) carrying the ILE368ASN mutation within the PINK1 gene. Single-cell RNA sequencing (RNAseq) and gene expression analysis of a PINK1 and a control cell line identified genes consistently differentially expressed during mDA neuron differentiation. Network analysis revealed that these genes form a core network, members of which interact with all known 19 protein-coding Parkinson’s disease-associated genes and encompasses key PD-associated pathways, including ubiquitination, mitochondrial, protein processing, RNA metabolism, and vesicular transport. Subsequent proteomics analysis showed a consistent alteration in proteins of dopamine metabolism validating the manifestation of the affected neuronal phenotype. Our findings suggest the existence of a network onto which pathways associated with PD pathology converge and offers new interpretation of the phenotypic heterogeneity of PD.
 
 <!-- ![Figure1](Figures/Figure1.jpg) -->
 <!-- <img src="Figures/Figure1.jpg" width=50%> -->
