@@ -1,4 +1,4 @@
-# PINK1 shows LRRK2, Parkin, and SNCA as part of the Parkinson’s network.
+# Single cell transcriptomics of human iPSC differentiation dynamics reveal a core network of Parkinson’s disease
 
 # Authors
 
