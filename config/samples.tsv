@@ -1,0 +1,10 @@
+sample	Condition	date	batch	file
+Control_IPSCs	Control	IPSCs	D	DADD5_S2_DGE.txt
+Control_D06	Control	D06	A	DADA4_S4_DGE.txt
+Control_D10	Control	D10	A	DADA3_S3_DGE.txt
+Control_D15	Control	D15	A	DADA2_S2_DGE.txt
+Control_D21	Control	D21	A	DADA1_S1_DGE.txt
+PINK1_IPSCs	PINK1	IPSCs	D	DADD6_S3_DGE.txt
+PINK1_D06	PINK1	D06	A	DADA8_S4_DGE.txt
+PINK1_D15	PINK1	D15	A	DADA6_S2_DGE.txt
+PINK1_D21	PINK1	D21	A	DADA5_S1_DGE.txt

@@ -1,0 +1,52 @@
+from snakemake.utils import min_version
+from snakemake.utils import validate
+import pandas as pd
+import os
+from smart_open import open
+import yaml
+
+
+min_version('6.4.0')
+
+# The main entry point of workflow.
+# After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
+
+configfile: 'config/config.yaml'
+
+container: 'docker://kyriakds/ipscs:version4'
+#singularity: 'docker://kyriakds/ipscs_pink1:firstimage'
+
+
+samples = pd.read_csv(config['samples'], sep='\t', dtype = str).set_index('sample', drop=False)
+samples.index.names = ['sample']
+
+rule all:
+    input:
+        #expand('result/Preprocess/{sample}/{sample}_{condition}_Cells_Removed.rds',zip,sample=samples['sample'],date=samples['date'],condition=samples['Condition']),
+        #'result/Mapping/Merged_seurat.rds',
+        'result/Pairwise/Pink1_venn_diagramm.pdf',
+        'result/Paper_Figures/Figure4.pdf',
+        'result/DEG/DF_Group_B_Conserved_all.txt',
+        'result/DEG/DF_Group_C_Conserved_all.txt',
+        'result/DEG/DF_Group_D.txt',
+        'Correlation_Networks.rds',
+        'result/Network/Num_Nodes_Interactions.pdf'
+
+
+include: 'rules/preprocess.smk'
+include: 'rules/mapping.smk'
+include: 'rules/deg_pairwise.smk'
+include: 'rules/deg_group_bc.smk'
+include: 'rules/deg_group_d.smk'
+include: 'rules/paper_figures.smk'
+include: 'rules/correlation_network.smk'
+include: 'rules/network_validation.smk'
+
+
+# rule report: 
+    
+
+# module load tools/Singularity
+# snakemake --use-singularity --singularity-args '-B /scratch/users/dkyriakis:/scratch/users/dkyriakis' -j 1
+# snakemake --use-singularity  -j 2
+

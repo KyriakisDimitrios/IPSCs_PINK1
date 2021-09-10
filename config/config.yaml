@@ -1,0 +1,20 @@
+# This file contains everything to configure the workflow on a global scale.
+# The sample based data must be complemented by a samples.tsv file that contains
+# one row per sample. It can be parsed easily via pandas.
+samples: "config/samples.tsv"
+params:
+	Preprocess:
+		tool: "seurat"
+		project: "IPSCs_pink1"
+		dataset: "IPSCs_pink1"
+		organism: "human"
+		imputation: FALSE
+		remove_mt: FALSE
+		remove_ribsomal: FALSE
+		n_cores: 1
+		elbow: TRUE
+		SCT: TRUE
+		criteria_pass: 3
+		min.cells: 10
+		min.features: 200
+		data_10x: FALSE
