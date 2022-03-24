@@ -8,6 +8,13 @@ Gabriela Novak, Dimitrios Kyriakis, Kamil Grzyb, Michela Bernini, Sophie Rodius,
 
 Parkinson’s disease (PD) is the second most prevalent neurodegenerative disorder, characterized by the loss of dopaminergic neurons (mDA) in the midbrain. The complex underlying mechanisms are only partly understood and there is no treatment able to reverse PD progression. Here, we aim to understand the disease mechanism using mDA neurons obtained through differentiation of human induced pluripotent stem cells (hiPSCs) carrying the ILE368ASN mutation within the PINK1 gene. Single-cell RNA sequencing (RNAseq) and gene expression analysis of a PINK1 and a control cell line identified genes consistently differentially expressed during mDA neuron differentiation. Network analysis revealed that these genes form a core network, members of which interact with all known 19 protein-coding Parkinson’s disease-associated genes and encompasses key PD-associated pathways, including ubiquitination, mitochondrial, protein processing, RNA metabolism, and vesicular transport. Subsequent proteomics analysis showed a consistent alteration in proteins of dopamine metabolism validating the manifestation of the affected neuronal phenotype. Our findings suggest the existence of a network onto which pathways associated with PD pathology converge and offers new interpretation of the phenotypic heterogeneity of PD.
 
+# Data
+
+The underlying data set are publicly available. The single cell RNA sequencing data is deposited at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE183248 and the proteomics data set at https://www.ebi.ac.uk/pride/archive?keyword=PXD028283.
+
+# Figures
+
+
 <!-- ![Figure1](Figures/Figure1.jpg) -->
 <!-- <img src="Figures/Figure1.jpg" width=50%> -->
 ![Figure1](Figures/Figure1.jpg)
