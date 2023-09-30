@@ -1,5 +1,8 @@
 # Single cell transcriptomics of human iPSC differentiation dynamics reveal a core network of Parkinson’s disease
 
+[![DOI](https://zenodo.org/badge/487969545.svg)](https://zenodo.org/badge/latestdoi/487969545)
+
+
 # Authors
 
 Gabriela Novak, Dimitrios Kyriakis, Kamil Grzyb, Michela Bernini, Sophie Rodius, Gunnar Dittmar, Steven Finkbeiner, and Alexander Skupin
